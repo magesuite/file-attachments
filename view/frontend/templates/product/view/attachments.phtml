@@ -1,0 +1,33 @@
+<?php
+/** @var \Magento\Framework\View\Element\Template $block */
+/** @var \MageSuite\FileAttachments\ViewModel\Product\Attachment $viewModel */
+/** @var \MageSuite\FileAttachments\Api\Data\AttachmentInterface[] $attachments */
+$viewModel = $block->getViewModel();
+$attachments = $viewModel->getAttachments();
+?>
+<?php if (count($attachments)) :?>
+    <ul class="cs-attachments">
+        <?php foreach ($attachments as $attachment) : ?>
+            <?php
+            $fileUrl = $attachment->getFileUrl();
+            $name = $attachment->getName() ?? $fileUrl;
+            $description = $attachment->getDescription() ?? null;
+            ?>
+            <li class="cs-attachments__item">
+                <a class="cs-attachments__link" href="<?= $escaper->escapeHtml($fileUrl) ?>" target="_blank">
+                    <?= $this->getLayout() //phpcs:ignore
+                            ->createBlock(\MageSuite\ThemeHelpers\Block\Icon::class)
+                            ->setIconUrl('images/icons/file.svg')
+                            ->setCssClass('cs-attachments__icon')
+                            ->setInlined(true)
+                            ->toHtml();
+                    ?>
+                    <span class="cs-attachments__name"><?= $escaper->escapeHtml($name) ?></span>
+                </a>
+                <?php if ($description) :?>
+                    <span class="cs-attachments__description"><?= $escaper->escapeHtml($description) ?></span>
+                <?php endif; ?>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+<?php endif; ?>
