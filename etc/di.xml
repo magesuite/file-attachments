@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="MageSuite\FileAttachments\Api\Data\AttachmentInterface"
+                type="MageSuite\FileAttachments\Model\Attachment" />
+
+    <preference for="MageSuite\FileAttachments\Api\AttachmentRepositoryInterface"
+                type="MageSuite\FileAttachments\Model\AttachmentRepository" />
+
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="fileattachments_attachment_listing_data_source" xsi:type="string">MageSuite\FileAttachments\Model\ResourceModel\Attachment\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <virtualType name="MageSuite\FileAttachments\Model\ResourceModel\Attachment\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">file_attachments</argument>
+            <argument name="resourceModel" xsi:type="string">MageSuite\FileAttachments\Model\ResourceModel\Attachment</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="MageSuite\FileAttachments\Model\FileUploader">
+        <arguments>
+            <argument name="baseTmpPath" xsi:type="string">file_attachments/tmp/attachment</argument>
+            <argument name="basePath" xsi:type="string">file_attachments/attachment</argument>
+            <argument name="allowedExtensions" xsi:type="array">
+                <item name="jpg" xsi:type="string">jpg</item>
+                <item name="jpeg" xsi:type="string">jpeg</item>
+                <item name="gif" xsi:type="string">gif</item>
+                <item name="png" xsi:type="string">png</item>
+                <item name="pdf" xsi:type="string">pdf</item>
+                <item name="doc" xsi:type="string">doc</item>
+                <item name="txt" xsi:type="string">txt</item>
+            </argument>
+            <argument name="allowedMimeTypes" xsi:type="array">
+                <item name="jpg" xsi:type="string">image/jpg</item>
+                <item name="jpeg" xsi:type="string">image/jpeg</item>
+                <item name="gif" xsi:type="string">image/gif</item>
+                <item name="png" xsi:type="string">image/png</item>
+                <item name="pdf" xsi:type="string">application/pdf</item>
+                <item name="doc" xsi:type="string">application/msword</item>
+                <item name="txt" xsi:type="string">text/plain</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <virtualType name="MageSuite\FileAttachments\Ui\Component\Listing\Column\Attachment\Store" type="Magento\Cms\Ui\Component\Listing\Column\Cms\Options"/>
+</config>
