@@ -67,6 +67,7 @@ class AttachmentDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvid
         unset($attachmentData[$attachment::FILENAME]);
         $attachmentData[$attachment::FILENAME][0] = [
             'name' => $name,
+            'url' => $attachment->getFileUrl(),
             'size' => $this->file->isFile($attachment->getFilePath())
                 ? $this->file->stat($attachment->getFilePath())['size'] : 0
         ];
