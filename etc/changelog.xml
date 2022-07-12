@@ -17,6 +17,13 @@
                     <ticket_id>IPET-866</ticket_id>
                 </entry>
             </tag>
+            <tag version="1.0.2" date="2022-07-12">
+                <entry>
+                    <type>FIX</type>
+                    <overview>Fix integration tests</overview>
+                    <ticket_id>IPET-866</ticket_id>
+                </entry>
+            </tag>
         </changelog>
     </module>
 </config>
