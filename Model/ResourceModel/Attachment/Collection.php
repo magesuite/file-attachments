@@ -90,4 +90,11 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
 
         return $this;
     }
+
+    public function sortByOrder(): self
+    {
+        $this->getSelect()->order('main_table.sort_order ASC');
+
+        return $this;
+    }
 }

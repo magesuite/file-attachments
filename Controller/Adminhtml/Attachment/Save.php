@@ -15,6 +15,8 @@ class Save extends \Magento\Backend\App\Action implements \Magento\Framework\App
 
     protected \MageSuite\FileAttachments\Model\FileUploader $fileUploader;
 
+    protected \MageSuite\FileAttachments\Model\Attachment\GenerateThumbnail $generateThumbnail;
+
     protected \Psr\Log\LoggerInterface $logger;
 
     public function __construct(
@@ -23,12 +25,14 @@ class Save extends \Magento\Backend\App\Action implements \Magento\Framework\App
         \MageSuite\FileAttachments\Model\AttachmentFactory $attachmentFactory,
         \MageSuite\FileAttachments\Api\AttachmentRepositoryInterface $attachmentRepository,
         \MageSuite\FileAttachments\Model\FileUploader $fileUploader,
+        \MageSuite\FileAttachments\Model\Attachment\GenerateThumbnail $generateThumbnail,
         \Psr\Log\LoggerInterface $logger
     ) {
         $this->dataPersistor = $dataPersistor;
         $this->attachmentFactory = $attachmentFactory;
         $this->attachmentRepository = $attachmentRepository;
         $this->fileUploader = $fileUploader;
+        $this->generateThumbnail = $generateThumbnail;
         $this->logger = $logger;
         parent::__construct($context);
     }
@@ -71,6 +75,7 @@ class Save extends \Magento\Backend\App\Action implements \Magento\Framework\App
 
             try {
                 $this->attachmentRepository->save($model);
+                $this->generateThumbnail->execute($model);
                 $this->messageManager->addSuccessMessage(__('You saved the attachment.'));
                 $this->dataPersistor->clear('fileattachments_attachment_attachment');
 

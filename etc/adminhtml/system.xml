@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="magesuite" translate="label" sortOrder="300">
+            <label>MageSuite</label>
+        </tab>
+        <section id="file_attachments" translate="label" type="text" sortOrder="400" showInDefault="1" showInWebsite="0" showInStore="0">
+            <label>File Attachments</label>
+            <tab>magesuite</tab>
+            <resource>MageSuite_FileAttachments::config_attachment</resource>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>General</label>
+                <field id="thumbnail_width" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Thumbnail Width</label>
+                    <validate>validate-number validate-positive-number</validate>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

@@ -9,6 +9,7 @@ interface AttachmentInterface
     public const FILENAME = 'filename';
     public const NAME = 'name';
     public const DESCRIPTION = 'description';
+    public const SORT_ORDER = 'sort_order';
     public const CREATED_AT = 'created_at';
     public const UPDATED_AT = 'updated_at';
 
@@ -57,6 +58,17 @@ interface AttachmentInterface
     public function setDescription(string $description);
 
     /**
+     * @return int
+     */
+    public function getSortOrder();
+
+    /**
+     * @param int $sortOrder
+     * @return AttachmentInterface
+     */
+    public function setSortOrder(int $sortOrder);
+
+    /**
      * @return string
      */
     public function getCreatedAt();
@@ -87,4 +99,14 @@ interface AttachmentInterface
      * @return string
      */
     public function getFileUrl();
+
+    /**
+     * @return string
+     */
+    public function getThumbnailUrl();
+
+    /**
+     * @return string
+     */
+    public function getThumbnailPath();
 }
