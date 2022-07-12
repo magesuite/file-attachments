@@ -31,8 +31,6 @@
                 <item name="gif" xsi:type="string">gif</item>
                 <item name="png" xsi:type="string">png</item>
                 <item name="pdf" xsi:type="string">pdf</item>
-                <item name="doc" xsi:type="string">doc</item>
-                <item name="txt" xsi:type="string">txt</item>
             </argument>
             <argument name="allowedMimeTypes" xsi:type="array">
                 <item name="jpg" xsi:type="string">image/jpg</item>
@@ -40,8 +38,6 @@
                 <item name="gif" xsi:type="string">image/gif</item>
                 <item name="png" xsi:type="string">image/png</item>
                 <item name="pdf" xsi:type="string">application/pdf</item>
-                <item name="doc" xsi:type="string">application/msword</item>
-                <item name="txt" xsi:type="string">text/plain</item>
             </argument>
         </arguments>
     </type>
