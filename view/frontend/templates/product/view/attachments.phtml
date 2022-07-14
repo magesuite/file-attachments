@@ -5,6 +5,7 @@
 $viewModel = $block->getViewModel();
 $attachments = $viewModel->getAttachments();
 ?>
+
 <?php if (count($attachments)) :?>
     <ul class="cs-attachments">
         <?php foreach ($attachments as $attachment) : ?>
@@ -12,21 +13,29 @@ $attachments = $viewModel->getAttachments();
             $fileUrl = $attachment->getFileUrl();
             $name = $attachment->getName() ?? $fileUrl;
             $description = $attachment->getDescription() ?? null;
+            $thumbnailUrl = $attachment->getThumbnailUrl();
             ?>
             <li class="cs-attachments__item">
-                <a class="cs-attachments__link" href="<?= $escaper->escapeHtml($fileUrl) ?>" target="_blank">
-                    <?= $this->getLayout() //phpcs:ignore
+                <a class="cs-attachments__link" href="<?= $escaper->escapeHtml($fileUrl) ?>" download>
+                    <?php if ($thumbnailUrl) :?>
+                        <img class="cs-attachments__thumbnail" url="<?= /* @noEscape */ $attachment->getThumbnailUrl() ?>" />
+                    <?php else : ?>
+                        <?= $this->getLayout() //phpcs:ignore
                             ->createBlock(\MageSuite\ThemeHelpers\Block\Icon::class)
-                            ->setIconUrl('images/icons/file.svg')
-                            ->setCssClass('cs-attachments__icon')
+                            ->setIconUrl('images/icons/attachment.svg')
+                            ->setCssClass('cs-attachments__thumbnail cs-attachments__thumbnail--placeholder')
                             ->setInlined(true)
                             ->toHtml();
-                    ?>
-                    <span class="cs-attachments__name"><?= $escaper->escapeHtml($name) ?></span>
+                        ?>
+                    <?php endif; ?>
+                    <span class="cs-attachments__texts">
+                        <span class="cs-attachments__name"><?= $escaper->escapeHtml($name) ?></span>
+                        <?php if ($description) :?>
+                            <span class="cs-attachments__description"><?= $escaper->escapeHtml($description) ?></span>
+                        <?php endif; ?>
+                    </span>
+                    <span class="cs-attachments__download"></span>
                 </a>
-                <?php if ($description) :?>
-                    <span class="cs-attachments__description"><?= $escaper->escapeHtml($description) ?></span>
-                <?php endif; ?>
             </li>
         <?php endforeach; ?>
     </ul>
