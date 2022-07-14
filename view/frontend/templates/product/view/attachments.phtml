@@ -18,12 +18,12 @@ $attachments = $viewModel->getAttachments();
             <li class="cs-attachments__item">
                 <a class="cs-attachments__link" href="<?= $escaper->escapeHtml($fileUrl) ?>" download>
                     <?php if ($thumbnailUrl) :?>
-                        <img class="cs-attachments__thumbnail" url="<?= $attachment->getThumbnailUrl() ?>" />
-                    <?php else: ?>
+                        <img class="cs-attachments__thumbnail" url="<?= /* @noEscape */ $attachment->getThumbnailUrl() ?>" />
+                    <?php else : ?>
                         <?= $this->getLayout() //phpcs:ignore
                             ->createBlock(\MageSuite\ThemeHelpers\Block\Icon::class)
-                            ->setIconUrl('images/icons/file.svg')
-                            ->setCssClass('cs-attachments__thumbnail')
+                            ->setIconUrl('images/icons/attachment.svg')
+                            ->setCssClass('cs-attachments__thumbnail cs-attachments__thumbnail--placeholder')
                             ->setInlined(true)
                             ->toHtml();
                         ?>
