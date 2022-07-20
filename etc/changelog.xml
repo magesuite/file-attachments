@@ -31,6 +31,13 @@
                     <ticket_id>IPET-866</ticket_id>
                 </entry>
             </tag>
+            <tag version="1.0.4" date="2022-07-20">
+                <entry>
+                    <type>FIX</type>
+                    <overview>Fix thumbnail images</overview>
+                    <ticket_id>IPET-866</ticket_id>
+                </entry>
+            </tag>
         </changelog>
     </module>
 </config>

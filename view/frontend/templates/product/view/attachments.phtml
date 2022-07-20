@@ -18,7 +18,7 @@ $attachments = $viewModel->getAttachments();
             <li class="cs-attachments__item">
                 <a class="cs-attachments__link" href="<?= $escaper->escapeHtml($fileUrl) ?>" download>
                     <?php if ($thumbnailUrl) :?>
-                        <img class="cs-attachments__thumbnail" url="<?= /* @noEscape */ $attachment->getThumbnailUrl() ?>" />
+                        <img class="cs-attachments__thumbnail" src="<?= /* @noEscape */ $attachment->getThumbnailUrl() ?>" />
                     <?php else : ?>
                         <?= $this->getLayout() //phpcs:ignore
                             ->createBlock(\MageSuite\ThemeHelpers\Block\Icon::class)
