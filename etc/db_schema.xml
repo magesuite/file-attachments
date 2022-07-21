@@ -28,9 +28,16 @@
             <column name="attachment_id"/>
             <column name="store_id"/>
         </constraint>
+        <constraint xsi:type="foreign" referenceId="FILE_ATTACHMENTS_STORE_ATTACHMENT_ID_FILE_ATTACHMENTS_ATTACHMENT_ID"
+                    table="file_attachments_store" column="attachment_id" referenceTable="file_attachments" referenceColumn="attachment_id"
+                    onDelete="CASCADE"/>
         <constraint xsi:type="foreign" referenceId="FILE_ATTACHMENTS_STORE_STORE_ID_STORE_STORE_ID"
                     table="file_attachments_store" column="store_id" referenceTable="store" referenceColumn="store_id"
                     onDelete="CASCADE"/>
+        <constraint xsi:type="unique" referenceId="FILE_ATTACHMENTS_STORE_ATTACHMENT_ID_STORE_ID">
+            <column name="attachment_id"/>
+            <column name="store_id"/>
+        </constraint>
     </table>
     <table name="file_attachments_product" resource="default" engine="innodb">
         <column xsi:type="int" name="attachment_id" padding="10" unsigned="true" nullable="false" identity="true"
@@ -41,8 +48,18 @@
             <column name="attachment_id"/>
             <column name="product_id"/>
         </constraint>
+        <constraint xsi:type="foreign" referenceId="FILE_ATTACHMENTS_PRODUCT_ATTACHMENT_ID_FILE_ATTACHMENTS_ATTACHMENT_ID"
+                    table="file_attachments_product" column="attachment_id" referenceTable="file_attachments" referenceColumn="attachment_id"
+                    onDelete="CASCADE"/>
         <constraint xsi:type="foreign" referenceId="FILE_ATTACHMENTS_PRODUCT_PRODUCT_ID_CATALOG_PRODUCT_ENTITY_ID"
                     table="file_attachments_product" column="product_id" referenceTable="catalog_product_entity" referenceColumn="entity_id"
                     onDelete="CASCADE"/>
+        <constraint xsi:type="unique" referenceId="FILE_ATTACHMENTS_PRODUCT_ATTACHMENT_ID_PRODUCT_ID">
+            <column name="attachment_id"/>
+            <column name="product_id"/>
+        </constraint>
+        <index referenceId="FILE_ATTACHMENTS_PRODUCT_PRODUCT_ID" indexType="btree">
+            <column name="product_id"/>
+        </index>
     </table>
 </schema>

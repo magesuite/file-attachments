@@ -34,11 +34,12 @@ class GenerateThumbnail
         }
 
         $imagick = new \Imagick($filePath);
-        $imagick->setimageformat(self::IMAGE_FORMAT);
-        $imagick->thumbnailimage($this->configuration->getThumbnailWidth(), 0);
-        $imagick->writeimage($attachment->getThumbnailPath());
+        $imagick->setImageFormat(self::IMAGE_FORMAT);
+        $imagick->mergeImageLayers(\Imagick::LAYERMETHOD_FLATTEN);
+        $imagick->setImageAlphaChannel(\Imagick::ALPHACHANNEL_REMOVE);
+        $imagick->thumbnailImage($this->configuration->getThumbnailWidth(), 0);
+        $imagick->writeImage($attachment->getThumbnailPath());
         $imagick->clear();
-        $imagick->destroy();
     }
 
     protected function checkUploadFolder(\MageSuite\FileAttachments\Api\Data\AttachmentInterface $attachment): void
