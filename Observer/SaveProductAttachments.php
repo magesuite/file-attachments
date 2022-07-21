@@ -33,6 +33,6 @@ class SaveProductAttachments implements \Magento\Framework\Event\ObserverInterfa
             $fileAttachments = [];
         }
 
-        $this->attachmentResource->assignAttachmentsToProduct((int)$product->getId(), $fileAttachments);
+        $this->attachmentResource->assignAttachmentsToProduct((int)$product->getId(), array_keys($fileAttachments));
     }
 }

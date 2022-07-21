@@ -4,9 +4,12 @@ define([
     'use strict';
 
     return function (config) {
-        var selectedAttachments = config.selectedAttachments,
-            fileAttachments = $H(selectedAttachments),
-            gridJsObject = window[config.gridJsObjectName];
+        var selectedAttachments = config.selectedAttachments;
+        var fileAttachments = $H({});
+        selectedAttachments.forEach(function(el) {
+            fileAttachments.set(el, 0);
+        });
+        var gridJsObject = window[config.gridJsObjectName];
 
         $('file_attachments').value = Object.toJSON(fileAttachments);
 
@@ -51,12 +54,28 @@ define([
             }
         }
 
+        /**
+         * Initialize attachment checkboxes
+         *
+         * @param {String} row
+         * @param {Array} selectedAttachments
+         */
+        function productAttachmentRowInit(row, selectedAttachments) {
+            var checkbox = $(row).getElementsByClassName('checkbox')[0];
+
+            if (checkbox) {
+                if (selectedAttachments.includes(checkbox.value)) {
+                    checkbox.checked = true;
+                }
+            }
+        }
+
         gridJsObject.rowClickCallback = productAttachmentRowClick;
         gridJsObject.checkboxCheckCallback = registerProductAttachment;
 
         if (gridJsObject.rows) {
             gridJsObject.rows.each(function (row) {
-                productAttachmentRowInit(gridJsObject, row);
+                productAttachmentRowInit(row, config.selectedAttachments);
             });
         }
     };
