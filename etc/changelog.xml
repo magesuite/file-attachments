@@ -48,6 +48,13 @@
                     <ticket_id>IPET-866</ticket_id>
                 </entry>
             </tag>
+            <tag version="1.0.6" date="2022-08-04">
+                <entry>
+                    <type>FIX</type>
+                    <overview>Fix displaying attachments assigned to specific store</overview>
+                    <ticket_id>IPET-1488</ticket_id>
+                </entry>
+            </tag>
         </changelog>
     </module>
 </config>
