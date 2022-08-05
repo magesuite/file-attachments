@@ -74,7 +74,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
                 'main_table.attachment_id = fas.attachment_id',
                 []
             )
-            ->where('fas.store_id IN (?)', implode(',', $storeIds));
+            ->where('fas.store_id IN (?)', $storeIds);
 
         return $this;
     }
