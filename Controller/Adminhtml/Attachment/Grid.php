@@ -23,6 +23,7 @@ class Grid extends \Magento\Backend\App\Action implements \Magento\Framework\App
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
     ) {
         parent::__construct($context);
+
         $this->resultRawFactory = $resultRawFactory;
         $this->layoutFactory = $layoutFactory;
         $this->registry = $registry;

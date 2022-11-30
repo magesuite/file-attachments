@@ -13,8 +13,9 @@ class Index extends \Magento\Backend\App\Action implements \Magento\Framework\Ap
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\View\Result\PageFactory $pageFactory
     ) {
-        $this->pageFactory = $pageFactory;
         parent::__construct($context);
+
+        $this->pageFactory = $pageFactory;
     }
 
     public function execute()

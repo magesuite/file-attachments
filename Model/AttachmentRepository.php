@@ -5,11 +5,6 @@ namespace MageSuite\FileAttachments\Model;
 
 class AttachmentRepository implements \MageSuite\FileAttachments\Api\AttachmentRepositoryInterface
 {
-    /**
-     * @var \MageSuite\FileAttachments\Api\Data\AttachmentInterface[]
-     */
-    protected $instancesById = [];
-
     protected \MageSuite\FileAttachments\Model\AttachmentFactory $attachmentFactory;
 
     protected \MageSuite\FileAttachments\Model\ResourceModel\Attachment $attachmentResource;
@@ -21,6 +16,8 @@ class AttachmentRepository implements \MageSuite\FileAttachments\Api\AttachmentR
     protected \Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface $collectionProcessor;
 
     protected \Psr\Log\LoggerInterface $logger;
+
+    protected array $instancesById = [];
 
     public function __construct(
         \MageSuite\FileAttachments\Model\AttachmentFactory $attachmentFactory,
@@ -38,11 +35,6 @@ class AttachmentRepository implements \MageSuite\FileAttachments\Api\AttachmentR
         $this->logger = $logger;
     }
 
-    /**
-     * @param int $attachmentId
-     * @return \MageSuite\FileAttachments\Api\Data\AttachmentInterface
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     */
     public function getById($attachmentId)
     {
         if (!isset($this->instancesById[$attachmentId])) {
@@ -60,13 +52,8 @@ class AttachmentRepository implements \MageSuite\FileAttachments\Api\AttachmentR
         return $this->instancesById[$attachmentId];
     }
 
-    /**
-     * @param \Magento\Framework\Api\SearchCriteriaInterface $criteria
-     * @return \Magento\Framework\Api\SearchResultsInterface
-     */
     public function getList(\Magento\Framework\Api\SearchCriteriaInterface $criteria)
     {
-        /** @var \MageSuite\FileAttachments\Model\ResourceModel\Attachment\Collection $collection */
         $collection = $this->collectionFactory->create();
         $collection->addStoreFilter();
         $collection->joinProductTable();
@@ -77,7 +64,6 @@ class AttachmentRepository implements \MageSuite\FileAttachments\Api\AttachmentR
             $this->instancesById[$attachment->getId()] = $attachment;
         }
 
-        /** @var \Magento\Framework\Api\SearchResultsInterface $searchResults */
         $searchResults = $this->searchResultsFactory->create();
         $searchResults->setSearchCriteria($criteria);
         $searchResults->setItems($collection->getItems());
@@ -86,11 +72,6 @@ class AttachmentRepository implements \MageSuite\FileAttachments\Api\AttachmentR
         return $searchResults;
     }
 
-    /**
-     * @param \MageSuite\FileAttachments\Api\Data\AttachmentInterface $attachment
-     * @return \MageSuite\FileAttachments\Api\Data\AttachmentInterface
-     * @throws \Magento\Framework\Exception\CouldNotSaveException
-     */
     public function save(\MageSuite\FileAttachments\Api\Data\AttachmentInterface $attachment)
     {
         try {
@@ -106,11 +87,6 @@ class AttachmentRepository implements \MageSuite\FileAttachments\Api\AttachmentR
         return $attachment;
     }
 
-    /**
-     * @param \MageSuite\FileAttachments\Api\Data\AttachmentInterface $attachment
-     * @return bool
-     * @throws \Magento\Framework\Exception\CouldNotSaveException
-     */
     public function delete(\MageSuite\FileAttachments\Api\Data\AttachmentInterface $attachment)
     {
         try {
@@ -125,12 +101,6 @@ class AttachmentRepository implements \MageSuite\FileAttachments\Api\AttachmentR
         return true;
     }
 
-    /**
-     * @param int $attachmentId
-     * @return bool
-     * @throws \Magento\Framework\Exception\CouldNotSaveException
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     */
     public function deleteById($attachmentId)
     {
         return $this->delete($this->getById($attachmentId));

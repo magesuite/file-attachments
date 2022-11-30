@@ -17,9 +17,10 @@ class Thumbnail extends \Magento\Ui\Component\Listing\Columns\Column
         array $components = [],
         array $data = []
     ) {
+        parent::__construct($context, $uiComponentFactory, $components, $data);
+
         $this->attachmentFactory = $attachmentFactory;
         $this->urlBuilder = $urlBuilder;
-        parent::__construct($context, $uiComponentFactory, $components, $data);
     }
 
     /**

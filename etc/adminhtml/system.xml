@@ -10,7 +10,7 @@
             <resource>MageSuite_FileAttachments::config_attachment</resource>
             <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>General</label>
-                <field id="thumbnail_width" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <field id="thumbnail_width" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Thumbnail Width</label>
                     <validate>validate-number validate-positive-number</validate>
                 </field>

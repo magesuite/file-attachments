@@ -5,13 +5,14 @@ namespace MageSuite\FileAttachments\Model\ResourceModel;
 
 class Attachment extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
-    protected $storeTable;
+    protected string $storeTable;
 
-    protected $productTable;
+    protected string $productTable;
 
     protected function _construct(): void
     {
         $this->_init('file_attachments', 'attachment_id');
+
         $this->storeTable = $this->getTable('file_attachments_store');
         $this->productTable = $this->getTable('file_attachments_product');
     }
@@ -23,7 +24,7 @@ class Attachment extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
             ->from($this->productTable, ['attachment_id'])
             ->where('product_id = ?', $productId);
 
-        return (array)$this->getConnection()->fetchCol($select);
+        return $this->getConnection()->fetchCol($select);
     }
 
     public function assignAttachmentsToProduct(int $productId, array $attachmentIds): self

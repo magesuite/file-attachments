@@ -32,11 +32,12 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements \Mage
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
+        parent::__construct($context, $registry, $resource, $resourceCollection, $data);
+
         $this->directoryList = $directoryList;
         $this->fileUploader = $fileUploader;
         $this->storeManager = $storeManager;
         $this->fileDriver = $fileDriver;
-        parent::__construct($context, $registry, $resource, $resourceCollection, $data);
     }
 
     protected function _construct()

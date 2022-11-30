@@ -1,10 +1,7 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <preference for="MageSuite\FileAttachments\Api\Data\AttachmentInterface"
-                type="MageSuite\FileAttachments\Model\Attachment" />
-
-    <preference for="MageSuite\FileAttachments\Api\AttachmentRepositoryInterface"
-                type="MageSuite\FileAttachments\Model\AttachmentRepository" />
+    <preference for="MageSuite\FileAttachments\Api\Data\AttachmentInterface" type="MageSuite\FileAttachments\Model\Attachment" />
+    <preference for="MageSuite\FileAttachments\Api\AttachmentRepositoryInterface" type="MageSuite\FileAttachments\Model\AttachmentRepository" />
 
     <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
         <arguments>

@@ -45,72 +45,41 @@ class FileUploader
         $this->allowedMimeTypes = $allowedMimeTypes;
     }
 
-    /**
-     * @param string $baseTmpPath
-     * @return void
-     */
     public function setBaseTmpPath($baseTmpPath)
     {
         $this->baseTmpPath = $baseTmpPath;
     }
 
-    /**
-     * @param string $basePath
-     * @return void
-     */
     public function setBasePath($basePath)
     {
         $this->basePath = $basePath;
     }
 
-    /**
-     * @param string[] $allowedExtensions
-     * @return void
-     */
     public function setAllowedExtensions($allowedExtensions)
     {
         $this->allowedExtensions = $allowedExtensions;
     }
 
-    /**
-     * @return string
-     */
     public function getBaseTmpPath()
     {
         return $this->baseTmpPath;
     }
 
-    /**
-     * @return string
-     */
     public function getBasePath()
     {
         return $this->basePath;
     }
 
-    /**
-     * @return string[]
-     */
     public function getAllowedExtensions()
     {
         return $this->allowedExtensions;
     }
 
-    /**
-     * @param string $path
-     * @param string $fileName
-     * @return string
-     */
     public function getFilePath($path, $fileName)
     {
         return rtrim($path, '/') . '/' . ltrim($fileName, '/');
     }
 
-    /**
-     * @param string $fileName
-     * @return string
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
     public function moveFileFromTmp($fileName)
     {
         $baseTmpPath = $this->getBaseTmpPath();
@@ -144,11 +113,6 @@ class FileUploader
         return $fileName;
     }
 
-    /**
-     * @param string $fileId
-     * @return string[]
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
     public function saveFileToTmpDir($fileId)
     {
         $baseTmpPath = $this->getBaseTmpPath();

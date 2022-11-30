@@ -13,8 +13,9 @@ class Delete extends \Magento\Backend\App\Action implements \Magento\Framework\A
         \Magento\Backend\App\Action\Context $context,
         \MageSuite\FileAttachments\Api\AttachmentRepositoryInterface $attachmentRepository
     ) {
-        $this->attachmentRepository = $attachmentRepository;
         parent::__construct($context);
+
+        $this->attachmentRepository = $attachmentRepository;
     }
 
     /**

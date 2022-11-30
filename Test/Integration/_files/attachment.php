@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 $attachment = $objectManager->get(\MageSuite\FileAttachments\Api\Data\AttachmentInterface::class);
 $attachmentRepository = $objectManager->get(\MageSuite\FileAttachments\Api\AttachmentRepositoryInterface::class);

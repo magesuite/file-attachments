@@ -16,9 +16,10 @@ class Edit extends \Magento\Backend\App\Action implements \Magento\Framework\App
         \Magento\Framework\View\Result\PageFactory $resultPageFactory,
         \MageSuite\FileAttachments\Api\AttachmentRepositoryInterface $attachmentRepository
     ) {
+        parent::__construct($context);
+
         $this->resultPageFactory = $resultPageFactory;
         $this->attachmentRepository = $attachmentRepository;
-        parent::__construct($context);
     }
 
     public function execute()

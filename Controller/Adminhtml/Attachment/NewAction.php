@@ -13,8 +13,9 @@ class NewAction extends \Magento\Backend\App\Action implements \Magento\Framewor
         \Magento\Backend\App\Action\Context $context,
         \Magento\Backend\Model\View\Result\ForwardFactory $resultForwardFactory
     ) {
-        $this->resultForwardFactory = $resultForwardFactory;
         parent::__construct($context);
+
+        $this->resultForwardFactory = $resultForwardFactory;
     }
 
     public function execute()
