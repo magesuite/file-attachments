@@ -11,7 +11,7 @@ class AttachmentDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvid
 
     protected \Magento\Framework\Filesystem\Driver\File $file;
 
-    protected $loadedData;
+    protected array $loadedData = [];
 
     public function __construct(
         $name,
@@ -24,6 +24,7 @@ class AttachmentDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvid
         array $data = []
     ) {
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
+
         $this->collection = $collectionFactory->create();
         $this->dataPersistor = $dataPersistor;
         $this->file = $file;
@@ -31,7 +32,7 @@ class AttachmentDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvid
 
     public function getData(): ?array
     {
-        if (isset($this->loadedData)) {
+        if (!empty($this->loadedData)) {
             return $this->loadedData;
         }
 
@@ -55,10 +56,8 @@ class AttachmentDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvid
         return $this->loadedData;
     }
 
-    protected function adjustFileData(
-        \MageSuite\FileAttachments\Api\Data\AttachmentInterface $attachment,
-        array &$attachmentData
-    ): void {
+    protected function adjustFileData(\MageSuite\FileAttachments\Api\Data\AttachmentInterface $attachment, array &$attachmentData): void
+    {
         if (!isset($attachmentData[$attachment::FILENAME])) {
             return;
         }
@@ -68,8 +67,7 @@ class AttachmentDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvid
         $attachmentData[$attachment::FILENAME][0] = [
             'name' => $name,
             'url' => $attachment->getFileUrl(),
-            'size' => $this->file->isFile($attachment->getFilePath())
-                ? $this->file->stat($attachment->getFilePath())['size'] : 0
+            'size' => $this->file->isFile($attachment->getFilePath()) ? $this->file->stat($attachment->getFilePath())['size'] : 0
         ];
     }
 }

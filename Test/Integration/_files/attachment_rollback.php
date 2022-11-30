@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 $registry = $objectManager->get(\Magento\Framework\Registry::class);
 $attachmentId = $registry->registry('attachmentId');

@@ -26,10 +26,11 @@ class AssignFileAttachments extends \Magento\Backend\Block\Template
         \Magento\Framework\Serialize\SerializerInterface $serializer,
         array $data = []
     ) {
+        parent::__construct($context, $data);
+
         $this->registryLocator = $registryLocator;
         $this->resourceModel = $resourceModel;
         $this->serializer = $serializer;
-        parent::__construct($context, $data);
     }
 
     public function getBlockGrid()

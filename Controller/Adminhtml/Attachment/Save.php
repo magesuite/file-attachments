@@ -28,13 +28,14 @@ class Save extends \Magento\Backend\App\Action implements \Magento\Framework\App
         \MageSuite\FileAttachments\Model\Attachment\GenerateThumbnail $generateThumbnail,
         \Psr\Log\LoggerInterface $logger
     ) {
+        parent::__construct($context);
+
         $this->dataPersistor = $dataPersistor;
         $this->attachmentFactory = $attachmentFactory;
         $this->attachmentRepository = $attachmentRepository;
         $this->fileUploader = $fileUploader;
         $this->generateThumbnail = $generateThumbnail;
         $this->logger = $logger;
-        parent::__construct($context);
     }
 
     public function execute()

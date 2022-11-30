@@ -1,7 +1,10 @@
 <?php
-/** @var \Magento\Framework\View\Element\Template $block */
-/** @var \MageSuite\FileAttachments\ViewModel\Product\Attachment $viewModel */
-/** @var \MageSuite\FileAttachments\Api\Data\AttachmentInterface[] $attachments */
+/**
+ * @var $block \Magento\Framework\View\Element\Template
+ * @var $escaper Magento\Framework\Escaper
+ * @var $viewModel \MageSuite\FileAttachments\ViewModel\Product\Attachment
+ * @var $attachments \MageSuite\FileAttachments\Api\Data\AttachmentInterface[]
+ */
 $viewModel = $block->getViewModel();
 $attachments = $viewModel->getAttachments();
 ?>

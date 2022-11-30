@@ -12,6 +12,7 @@ class Upload extends \Magento\Backend\App\Action implements \Magento\Framework\A
         \MageSuite\FileAttachments\Model\FileUploader $fileUploader
     ) {
         parent::__construct($context);
+
         $this->fileUploader = $fileUploader;
     }
 

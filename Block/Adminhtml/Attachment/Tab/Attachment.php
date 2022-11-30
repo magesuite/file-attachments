@@ -22,16 +22,18 @@ class Attachment extends \Magento\Backend\Block\Widget\Grid\Extended
         \Magento\Framework\Serialize\SerializerInterface $serializer,
         array $data = []
     ) {
+        parent::__construct($context, $backendHelper, $data);
+
         $this->collectionFactory = $collectionFactory;
         $this->resourceModel = $resourceModel;
         $this->registryLocator = $registryLocator;
         $this->serializer = $serializer;
-        parent::__construct($context, $backendHelper, $data);
     }
 
     protected function _construct()
     {
         parent::_construct();
+
         $this->setId('catalog_product_file_attachments');
         $this->setDefaultSort('attachment_id');
         $this->setUseAjax(true);
