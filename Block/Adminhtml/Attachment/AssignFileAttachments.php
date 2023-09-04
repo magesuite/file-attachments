@@ -31,6 +31,8 @@ class AssignFileAttachments extends \Magento\Backend\Block\Template
         $this->registryLocator = $registryLocator;
         $this->resourceModel = $resourceModel;
         $this->serializer = $serializer;
+
+        $this->setNameInLayout('assign_file_attachments');
     }
 
     public function getBlockGrid()
