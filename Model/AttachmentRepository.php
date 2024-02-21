@@ -56,6 +56,7 @@ class AttachmentRepository implements \MageSuite\FileAttachments\Api\AttachmentR
     {
         $collection = $this->collectionFactory->create();
         $collection->addStoreFilter();
+        $collection->addCustomerGroupFilter();
         $collection->joinProductTable();
         $collection->sortByOrder();
         $this->collectionProcessor->process($criteria, $collection);

@@ -9,12 +9,15 @@ class Attachment extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 
     protected string $productTable;
 
+    protected string $customerGroupTable;
+
     protected function _construct(): void
     {
         $this->_init('file_attachments', 'attachment_id');
 
         $this->storeTable = $this->getTable('file_attachments_store');
         $this->productTable = $this->getTable('file_attachments_product');
+        $this->customerGroupTable = $this->getTable('file_attachments_customer_group');
     }
 
     public function getProductAttachmentIds($productId): array
@@ -73,9 +76,23 @@ class Attachment extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         return $connection->fetchCol($select, ['attachment_id' => (int)$id]);
     }
 
-    protected function _afterSave(\Magento\Framework\Model\AbstractModel $object)
+    public function lookupCustomerGroupIds($id): array
     {
         $connection = $this->getConnection();
+        $select = $connection->select()
+            ->from(['facg' => $this->customerGroupTable], 'customer_group_id')
+            ->join(
+                ['fa' => $this->getMainTable()],
+                'facg.attachment_id = fa.attachment_id',
+                []
+            )
+            ->where('fa.attachment_id = :attachment_id');
+
+        return $connection->fetchCol($select, ['attachment_id' => (int)$id]);
+    }
+
+    protected function insertStores($object, $connection)
+    {
         $oldStores = $this->lookupStoreIds((int)$object->getId());
         $newStores = (array)$object->getStoreIds();
         $delete = array_diff($oldStores, $newStores);
@@ -101,6 +118,43 @@ class Attachment extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 
             $connection->insertMultiple($this->storeTable, $data);
         }
+    }
+
+    protected function insertCustomerGroups($object, $connection)
+    {
+        $oldCustomerGroups = $this->lookupCustomerGroupIds((int)$object->getId());
+        $newCustomerGroups = (array)$object->getCustomerGroupIds();
+        $delete = array_diff($oldCustomerGroups, $newCustomerGroups);
+        $insert = array_diff($newCustomerGroups, $oldCustomerGroups);
+
+        if ($delete) {
+            $where = [
+                'attachment_id = ?' => (int)$object->getId(),
+                'customer_group_id IN (?)' => $delete,
+            ];
+            $connection->delete($this->customerGroupTable, $where);
+        }
+
+        if ($insert) {
+            $data = [];
+
+            foreach ($insert as $customerGroupId) {
+                $data[] = [
+                    'attachment_id' => (int)$object->getId(),
+                    'customer_group_id' => (int)$customerGroupId,
+                ];
+            }
+
+            $connection->insertMultiple($this->customerGroupTable, $data);
+        }
+    }
+
+    protected function _afterSave(\Magento\Framework\Model\AbstractModel $object)
+    {
+        $connection = $this->getConnection();
+
+        $this->insertStores($object, $connection);
+        $this->insertCustomerGroups($object, $connection);
 
         return parent::_afterSave($object);
     }
@@ -110,6 +164,9 @@ class Attachment extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         if ($object->getId()) {
             $stores = $this->lookupStoreIds((int)$object->getId());
             $object->setData('store_ids', $stores);
+
+            $customerGroupIds = $this->lookupCustomerGroupIds((int)$object->getId());
+            $object->setData('customer_group_ids', $customerGroupIds);
         }
 
         return parent::_afterLoad($object);

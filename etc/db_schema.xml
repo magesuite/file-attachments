@@ -51,4 +51,22 @@
             <column name="product_id"/>
         </index>
     </table>
+    <table name="file_attachments_customer_group" resource="default" engine="innodb">
+        <column xsi:type="int" name="attachment_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Attachment ID"/>
+        <column xsi:type="int" name="customer_group_id" unsigned="true" nullable="false" comment="Customer Group ID"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="attachment_id"/>
+            <column name="customer_group_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="FILE_ATTACHMENTS_CUSTOMER_GROUP_ATTACHMENT_ID_FILE_ATTACHMENTS_ATTACHMENT_ID"
+                    table="file_attachments_customer_group" column="attachment_id" referenceTable="file_attachments" referenceColumn="attachment_id"
+                    onDelete="CASCADE"/>
+        <constraint xsi:type="foreign" referenceId="FILE_ATTACHMENTS_CUSTOMER_GROUP_STORE_ID_CUSTOMER_GROUP_CUSTOMER_GROUP_ID"
+                    table="file_attachments_customer_group" column="customer_group_id" referenceTable="customer_group" referenceColumn="customer_group_id"
+                    onDelete="CASCADE"/>
+        <constraint xsi:type="unique" referenceId="FILE_ATTACHMENTS_CUSTOMER_ATTACHMENT_ID_CUSTOMER_GROUP_ID">
+            <column name="attachment_id"/>
+            <column name="customer_group_id"/>
+        </constraint>
+    </table>
 </schema>

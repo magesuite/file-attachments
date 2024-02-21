@@ -36,7 +36,10 @@ class AttachmentDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvid
             return $this->loadedData;
         }
 
-        $items = $this->getCollection()->addStoreIdsToResults()->getItems();
+        $items = $this->getCollection()
+            ->addStoreIdsToResults()
+            ->addCustomerGroupIdsToResults()
+            ->getItems();
 
         foreach ($items as $attachment) {
             $attachmentData = $attachment->getData();
