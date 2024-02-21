@@ -86,17 +86,9 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
             foreach ($result as $customerGroupData) {
                 $customerGroupsData[$customerGroupData['attachment_id']][] = $customerGroupData['customer_group_id'];
             }
-        } else {
-            foreach ($linkedIds as $linkedId) {
-                foreach ($this->getAllCustomerGroups() as $customerGroup) {
-                    $customerGroupsData[$linkedId][] = $customerGroup['customer_group_id'];
-                }
-            }
         }
 
-        foreach ($result as $customerGroupData) {
-            $customerGroupsData[$customerGroupData['attachment_id']][] = $customerGroupData['customer_group_id'];
-        }
+        $this->addCustomerGroupsForMissingLinkedIds($linkedIds, $customerGroupsData);
 
         foreach ($this as $item) {
             $linkedId = $item->getId();
@@ -133,7 +125,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         $customerGroupId = $this->customerSession->getCustomerGroupId() ?? 0;
         $customerGroupAttachments = $this->getConnection()
             ->select()
-            ->from(['facp' => $this->getTable('file_attachments_customer_group')], 'customer_group_id')
+            ->from(['facg' => $this->getTable('file_attachments_customer_group')], 'customer_group_id')
             ->where('facg.customer_group_id = ?', $customerGroupId)
             ->query()
             ->fetchAll();
@@ -145,10 +137,10 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         $this->getSelect()
             ->join(
                 ['facg' => $this->getTable('file_attachments_customer_group')],
-                'main_table.attachment_id = fas.attachment_id',
+                'main_table.attachment_id = facg.attachment_id',
                 []
             )
-            ->where('facg.cusromer_group_id = ?', $customerGroupId);
+            ->where('facg.customer_group_id = ?', $customerGroupId);
 
         return $this;
     }
@@ -178,5 +170,18 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
             ->from($this->getTable('customer_group'), ['customer_group_id'])
             ->query()
             ->fetchAll();
+    }
+
+    protected function addCustomerGroupsForMissingLinkedIds($linkedIds, &$customerGroupsData)
+    {
+        foreach ($linkedIds as $linkedId) {
+            if (isset($customerGroupsData[$linkedId])) {
+                continue;
+            }
+
+            foreach ($this->getAllCustomerGroups() as $customerGroup) {
+                $customerGroupsData[$linkedId][] = $customerGroup['customer_group_id'];
+            }
+        }
     }
 }
