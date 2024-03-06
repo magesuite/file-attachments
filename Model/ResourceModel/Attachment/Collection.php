@@ -5,23 +5,15 @@ namespace MageSuite\FileAttachments\Model\ResourceModel\Attachment;
 
 class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
 {
-    protected \Magento\Store\Model\StoreManagerInterface $storeManager;
-    protected \Magento\Customer\Model\Session $customerSession;
-
     public function __construct(
         \Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory,
         \Psr\Log\LoggerInterface $logger,
         \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
         \Magento\Framework\Event\ManagerInterface $eventManager,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Customer\Model\Session $customerSession,
         \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
         \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null
     ) {
         parent::__construct($entityFactory, $logger, $fetchStrategy, $eventManager, $connection, $resource);
-
-        $this->storeManager = $storeManager;
-        $this->customerSession = $customerSession;
     }
 
     protected function _construct(): void
@@ -103,12 +95,8 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         return $this;
     }
 
-    public function addStoreFilter(): self
+    public function addStoreFilter($storeIds): self
     {
-        $storeIds = [
-            \Magento\Store\Model\Store::DEFAULT_STORE_ID,
-            $this->storeManager->getStore()->getId()
-        ];
         $this->getSelect()
             ->join(
                 ['fas' => $this->getTable('file_attachments_store')],
@@ -120,9 +108,8 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         return $this;
     }
 
-    public function addCustomerGroupFilter(): self
+    public function addCustomerGroupFilter($customerGroupId): self
     {
-        $customerGroupId = $this->customerSession->getCustomerGroupId() ?? 0;
         $customerGroupAttachments = $this->getConnection()
             ->select()
             ->from(['facg' => $this->getTable('file_attachments_customer_group')], 'customer_group_id')
@@ -164,7 +151,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         return $this;
     }
 
-    protected function getAllCustomerGroups()
+    protected function getAllCustomerGroups(): array
     {
         return $this->getConnection()->select()
             ->from($this->getTable('customer_group'), ['customer_group_id'])
@@ -172,7 +159,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
             ->fetchAll();
     }
 
-    protected function addCustomerGroupsForMissingLinkedIds($linkedIds, &$customerGroupsData)
+    protected function addCustomerGroupsForMissingLinkedIds(array $linkedIds, array &$customerGroupsData): void
     {
         foreach ($linkedIds as $linkedId) {
             if (isset($customerGroupsData[$linkedId])) {

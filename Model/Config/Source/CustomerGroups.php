@@ -6,20 +6,9 @@ class CustomerGroups implements \Magento\Framework\Option\ArrayInterface
 {
     protected $options;
 
-    /**
-     * @param \Magento\Customer\Api\GroupRepositoryInterface $groupRepository
-     */
-    protected $groupRepository;
-
-    /**
-     * @param \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder
-     */
-    protected $searchCriteriaBuilder;
-
-    /**
-     * @param \Magento\Framework\Convert\DataObject $objectConverter
-     */
-    protected $objectConverter;
+    protected \Magento\Customer\Api\GroupRepositoryInterface $groupRepository;
+    protected \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder;
+    protected \Magento\Framework\Convert\DataObject $objectConverter;
 
     public function __construct(
         \Magento\Customer\Api\GroupRepositoryInterface $groupRepository,
