@@ -95,7 +95,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         return $this;
     }
 
-    public function addStoreFilter($storeIds): self
+    public function addStoreFilter(array $storeIds): self
     {
         $this->getSelect()
             ->join(
@@ -108,7 +108,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         return $this;
     }
 
-    public function addCustomerGroupFilter($customerGroupId): self
+    public function addCustomerGroupFilter(string|int $customerGroupId): self
     {
         $customerGroupAttachments = $this->getConnection()
             ->select()
