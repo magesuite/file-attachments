@@ -13,13 +13,13 @@ $attachments = $viewModel->getAttachments();
     <ul class="cs-attachments">
         <?php foreach ($attachments as $attachment) : ?>
             <?php
-            $fileUrl = $attachment->getFileUrl();
-            $name = $attachment->getName() ?? $fileUrl;
+            $downloadUrl = $attachment->getDownloadUrl();
+            $name = $attachment->getName() ?? $downloadUrl;
             $description = $attachment->getDescription() ?? null;
             $thumbnailUrl = $attachment->getThumbnailUrl();
             ?>
             <li class="cs-attachments__item">
-                <a class="cs-attachments__link" href="<?= $escaper->escapeHtml($fileUrl) ?>" download>
+                <a class="cs-attachments__link" href="<?= $escaper->escapeHtml($downloadUrl) ?>">
                     <?php if ($thumbnailUrl) :?>
                         <img class="cs-attachments__thumbnail" src="<?= /* @noEscape */ $attachment->getThumbnailUrl() ?>" />
                     <?php else : ?>

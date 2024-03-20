@@ -21,6 +21,8 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements \Mage
 
     protected \Magento\Framework\Filesystem\Driver\File $fileDriver;
 
+    protected \Magento\Framework\UrlInterface $urlBuilder;
+
     public function __construct(
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
@@ -28,6 +30,7 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements \Mage
         \MageSuite\FileAttachments\Model\FileUploader $fileUploader,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\Filesystem\Driver\File $fileDriver,
+        \Magento\Framework\UrlInterface $urlBuilder,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -38,6 +41,7 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements \Mage
         $this->fileUploader = $fileUploader;
         $this->storeManager = $storeManager;
         $this->fileDriver = $fileDriver;
+        $this->urlBuilder = $urlBuilder;
     }
 
     protected function _construct()
@@ -128,12 +132,12 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements \Mage
     {
         $filename = $this->generateThumbnailFilename($this->getFilename());
 
-        return $this->getUploadFolderPath() . DIRECTORY_SEPARATOR . 'thumbnail' . DIRECTORY_SEPARATOR . $filename;
+        return $this->getUploadFolderPath(\Magento\Framework\App\Filesystem\DirectoryList::MEDIA) . DIRECTORY_SEPARATOR . 'thumbnail' . DIRECTORY_SEPARATOR . $filename;
     }
 
     public function getFilePath(): string
     {
-        return $this->getUploadFolderPath() . DIRECTORY_SEPARATOR . $this->getFilename();
+        return $this->getUploadFolderPath(\Magento\Framework\App\Filesystem\DirectoryList::VAR_DIR) . DIRECTORY_SEPARATOR . $this->getFilename();
     }
 
     public function getFileUrl(): string
@@ -144,9 +148,14 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements \Mage
         return $mediaUrl . $this->fileUploader->getBasePath() . '/' . $this->getFilename();
     }
 
-    protected function getUploadFolderPath(): string
+    public function getDownloadUrl(): string
     {
-        return $this->directoryList->getPath(\Magento\Framework\App\Filesystem\DirectoryList::MEDIA)
+        return $this->urlBuilder->getUrl('file_attachments/attachment/download', ['file' => $this->getFilename(), 'id' => $this->getId()]);
+    }
+
+    protected function getUploadFolderPath($directoryType): string
+    {
+        return $this->directoryList->getPath($directoryType)
             . DIRECTORY_SEPARATOR . 'file_attachments'
             . DIRECTORY_SEPARATOR . 'attachment';
     }

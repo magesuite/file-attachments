@@ -103,6 +103,11 @@ interface AttachmentInterface
     /**
      * @return string
      */
+    public function getDownloadUrl();
+
+    /**
+     * @return string
+     */
     public function getThumbnailUrl();
 
     /**
