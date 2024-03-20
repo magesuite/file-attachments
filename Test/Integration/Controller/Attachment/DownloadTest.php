@@ -4,26 +4,13 @@ namespace MageSuite\FileAttachments\Test\Integration\Controller\Attachment;
 
 class DownloadTest extends \Magento\TestFramework\TestCase\AbstractController
 {
-    protected ?\MageSuite\FileAttachments\ViewModel\Product\Attachment $attachmentViewModel;
-
-    protected ?\MageSuite\FileAttachments\Api\AttachmentRepositoryInterface $attachmentRepository;
-
     protected ?\Magento\Framework\Registry $registry;
-
-    protected ?\Magento\Customer\Model\Customer $customer;
-
-    protected ?\Magento\Customer\Model\Session $customerSession;
 
     protected function setUp(): void
     {
         parent::setUp();
         $objectManager = \Magento\TestFramework\ObjectManager::getInstance();
-
-        $this->attachmentViewModel = $objectManager->get(\MageSuite\FileAttachments\ViewModel\Product\Attachment::class);
-        $this->attachmentRepository = $objectManager->get(\MageSuite\FileAttachments\Api\AttachmentRepositoryInterface::class);
         $this->registry = $objectManager->get(\Magento\Framework\Registry::class);
-        $this->customer = $objectManager->create(\Magento\Customer\Model\Customer::class);
-        $this->customerSession = $objectManager->get(\Magento\Customer\Model\Session::class);
     }
 
     /**
