@@ -114,4 +114,9 @@ interface AttachmentInterface
      * @return string
      */
     public function getThumbnailPath();
+
+    /**
+     * @return array
+     */
+    public function getAllowedCustomerGroupIds();
 }

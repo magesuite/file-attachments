@@ -23,6 +23,8 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements \Mage
 
     protected \Magento\Framework\UrlInterface $urlBuilder;
 
+    protected \MageSuite\FileAttachments\Service\HashAttachmentFilename $hashAttachmentFilename;
+
     public function __construct(
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
@@ -31,6 +33,7 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements \Mage
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\Filesystem\Driver\File $fileDriver,
         \Magento\Framework\UrlInterface $urlBuilder,
+        \MageSuite\FileAttachments\Service\HashAttachmentFilename $hashAttachmentFilename,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -42,6 +45,7 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements \Mage
         $this->storeManager = $storeManager;
         $this->fileDriver = $fileDriver;
         $this->urlBuilder = $urlBuilder;
+        $this->hashAttachmentFilename = $hashAttachmentFilename;
     }
 
     protected function _construct()
@@ -150,7 +154,14 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements \Mage
 
     public function getDownloadUrl(): string
     {
-        return $this->urlBuilder->getUrl('file_attachments/attachment/download', ['file' => $this->getFilename(), 'id' => $this->getId()]);
+        $filenameHash = $this->hashAttachmentFilename->getHashFromFilename($this->getFilename());
+
+        return $this->urlBuilder->getUrl('file_attachments/attachment/download', ['file' => $filenameHash, 'id' => $this->getId()]);
+    }
+
+    public function getAllowedCustomerGroupIds(): array
+    {
+        return $this->getResource()->lookupCustomerGroupIds($this->getId());
     }
 
     protected function getUploadFolderPath($directoryType): string

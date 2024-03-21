@@ -6,11 +6,14 @@ class DownloadTest extends \Magento\TestFramework\TestCase\AbstractController
 {
     protected ?\Magento\Framework\Registry $registry;
 
+    protected ?\MageSuite\FileAttachments\Service\HashAttachmentFilename $hashAttachmentFilename;
+
     protected function setUp(): void
     {
         parent::setUp();
         $objectManager = \Magento\TestFramework\ObjectManager::getInstance();
         $this->registry = $objectManager->get(\Magento\Framework\Registry::class);
+        $this->hashAttachmentFilename = $objectManager->get(\MageSuite\FileAttachments\Service\HashAttachmentFilename::class);
     }
 
     /**
@@ -21,12 +24,12 @@ class DownloadTest extends \Magento\TestFramework\TestCase\AbstractController
     public function testItAllowDownloadFileForMatchingAttachment()
     {
         $attachmentId = $this->registry->registry('first_attachment_id');
-        $postData = [
-            'file' => 'magento_image.jpg',
-            'id' => $attachmentId
-        ];
-        $this->getRequest()->setPostValue($postData);
-        $this->dispatch('file_attachments/attachment/download');
+
+        $fileNameHash = $this->hashAttachmentFilename->getHashFromFilename('magento_image.jpg');
+
+        $uri = sprintf('file_attachments/attachment/download/file/%s/id/%s', $fileNameHash, $attachmentId);
+
+        $this->dispatch($uri);
 
         $this->assertEquals(200, $this->getResponse()->getStatusCode());
 
@@ -38,15 +41,15 @@ class DownloadTest extends \Magento\TestFramework\TestCase\AbstractController
      * @magentoAppIsolation enabled
      * @magentoDataFixture MageSuite_FileAttachments::Test/Integration/_files/attachment.php
      */
-    public function testItDoNotAllowDownloadFileForNotMatchingAttachment()
+    public function testAttachmentForLoggedInUserCannotBeDownloadedByUnauthorizedCustomer()
     {
         $attachmentId = $this->registry->registry('third_attachment_id');
-        $postData = [
-            'file' => 'magento_image.jpg',
-            'id' => $attachmentId
-        ];
-        $this->getRequest()->setPostValue($postData);
-        $this->dispatch('file_attachments/attachment/download');
+
+        $fileNameHash = $this->hashAttachmentFilename->getHashFromFilename('magento_image.jpg');
+
+        $uri = sprintf('file_attachments/attachment/download/file/%s/id/%s', $fileNameHash, $attachmentId);
+
+        $this->dispatch($uri);
 
         $this->assertEquals(302, $this->getResponse()->getStatusCode());
 
@@ -60,12 +63,11 @@ class DownloadTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     public function testItDoNotAllowDownloadFileForNotExistingAttachment()
     {
-        $postData = [
-            'file' => 'magento_image.jpg',
-            'id' => 200
-        ];
-        $this->getRequest()->setPostValue($postData);
-        $this->dispatch('file_attachments/attachment/download');
+        $fileNameHash = $this->hashAttachmentFilename->getHashFromFilename('magento_image.jpg');
+
+        $uri = sprintf('file_attachments/attachment/download/file/%s/id/%s', $fileNameHash, 200);
+
+        $this->dispatch($uri);
 
         $this->assertEquals(302, $this->getResponse()->getStatusCode());
 
@@ -81,16 +83,21 @@ class DownloadTest extends \Magento\TestFramework\TestCase\AbstractController
     public function testItDoNotAllowDownloadFileForWrongPostParams()
     {
         $attachmentId = $this->registry->registry('first_attachment_id');
-        $postData = [
-            'file' => 'magento_image_wrong_filename.jpg',
-            'id' => $attachmentId
-        ];
-        $this->getRequest()->setPostValue($postData);
-        $this->dispatch('file_attachments/attachment/download');
+
+        $fileNameHash = $this->hashAttachmentFilename->getHashFromFilename('magento_image_wrong_filename.jpg');
+
+        $uri = sprintf('file_attachments/attachment/download/file/%s/id/%s', $fileNameHash, $attachmentId);
+
+        $this->dispatch($uri);
 
         $this->assertEquals(302, $this->getResponse()->getStatusCode());
 
         $messages = $this->getMessages();
         $this->assertEquals('Attachment does not exist.', $messages[0]);
+    }
+
+    protected function getHashFromFilename(string $filename): string
+    {
+        return $this->getHashFromFilename($filename);
     }
 }

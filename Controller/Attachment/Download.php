@@ -9,6 +9,8 @@ class Download extends \Magento\Framework\App\Action\Action
     protected \MageSuite\FileAttachments\Service\CustomerGroupValidator $customerGroupValidator;
     protected \Magento\Framework\App\Response\Http\FileFactory $fileFactory;
     protected \Magento\Framework\UrlInterface $url;
+    protected \MageSuite\FileAttachments\Service\HashAttachmentFilename $hashAttachmentFilename;
+    protected \Psr\Log\LoggerInterface $logger;
 
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
@@ -16,7 +18,9 @@ class Download extends \Magento\Framework\App\Action\Action
         \MageSuite\FileAttachments\Model\FileUploader $fileUploader,
         \MageSuite\FileAttachments\Service\CustomerGroupValidator $customerGroupValidator,
         \Magento\Framework\App\Response\Http\FileFactory $fileFactory,
-        \Magento\Framework\UrlInterface $url
+        \MageSuite\FileAttachments\Service\HashAttachmentFilename $hashAttachmentFilename,
+        \Magento\Framework\UrlInterface $url,
+        \Psr\Log\LoggerInterface $logger
     ) {
         parent::__construct($context);
         $this->attachmentRepository = $attachmentRepository;
@@ -24,21 +28,23 @@ class Download extends \Magento\Framework\App\Action\Action
         $this->customerGroupValidator = $customerGroupValidator;
         $this->fileFactory = $fileFactory;
         $this->url = $url;
+        $this->hashAttachmentFilename = $hashAttachmentFilename;
+        $this->logger = $logger;
     }
 
     public function execute()
     {
         try {
-            $file = $this->getRequest()->getParam('file');
+            $fileNameHash = $this->getRequest()->getParam('file');
             $id = $this->getRequest()->getParam('id');
             $attachment = $this->attachmentRepository->getById($id);
 
-            if (!$this->validateAttachment($attachment, $file)) {
+            if (!$this->validateAttachment($attachment, $fileNameHash)) {
                 $this->messageManager->addErrorMessage(__('Attachment does not exist.'));
                 return $this->redirectToReferer();
             }
 
-            if (!$this->customerGroupValidator->isValid($attachment->getAttachmentId())) {
+            if (!$this->customerGroupValidator->isValid($attachment)) {
                 $this->messageManager->addErrorMessage(__('You are not allowed to download this file.'));
                 return $this->redirectToReferer();
             }
@@ -47,12 +53,17 @@ class Download extends \Magento\Framework\App\Action\Action
 
             $fileContent = ['type' => 'filename', 'value' => sprintf('%s/%s', $this->fileUploader->getBasePath(), $fileName)];
 
-            return $this->fileFactory->create(
+            $response = $this->fileFactory->create(
                 $fileName,
                 $fileContent,
                 \Magento\Framework\App\Filesystem\DirectoryList::VAR_DIR
             );
+
+            $response->setHeader('Cache-Control', 'no-cache');
+
+            return $response;
         } catch (\Exception $e) {
+            $this->logger->error(sprintf('Error during attachment download: %s', $e->getMessage()));
             $this->messageManager->addErrorMessage(__('Something went wrong. Please try again later.'));
             return $this->redirectToReferer();
         }
@@ -67,9 +78,10 @@ class Download extends \Magento\Framework\App\Action\Action
         return $resultRedirect;
     }
 
-    protected function validateAttachment(\MageSuite\FileAttachments\Api\Data\AttachmentInterface $attachment, string $file): bool
+    protected function validateAttachment(\MageSuite\FileAttachments\Api\Data\AttachmentInterface $attachment, string $fileNameHash): bool
     {
-        if (!$attachment->getId() || $attachment->getFilename() !== $file) {
+        $generatedFileNameHash = $this->hashAttachmentFilename->getHashFromFilename($attachment->getFilename());
+        if (!$attachment->getId() || $generatedFileNameHash !== $fileNameHash) {
             return false;
         }
 

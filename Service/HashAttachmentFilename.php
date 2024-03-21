@@ -2,7 +2,7 @@
 
 namespace MageSuite\FileAttachments\Service;
 
-class CustomerGroupValidator
+class HashAttachmentFilename
 {
     protected \Magento\Customer\Model\Session $customerSession;
     protected \MageSuite\FileAttachments\Model\ResourceModel\Attachment $attachmentResource;
@@ -15,11 +15,8 @@ class CustomerGroupValidator
         $this->attachmentResource = $attachmentResource;
     }
 
-    public function isValid(\MageSuite\FileAttachments\Api\Data\AttachmentInterface $attachment): bool
+    public function getHashFromFilename(string $filename): string
     {
-        $attachmentCustomerGroups = $attachment->getAllowedCustomerGroupIds();
-        $customerGroupId = $this->customerSession->getCustomerGroupId();
-
-        return in_array($customerGroupId, $attachmentCustomerGroups);
+        return hash('sha256', $filename);
     }
 }
