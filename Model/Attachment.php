@@ -129,7 +129,7 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements \Mage
             ->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
         $filename = $this->generateThumbnailFilename($this->getFilename());
 
-        return $mediaUrl . $this->fileUploader->getBasePath() . '/thumbnail/' . $filename;
+        return sprintf('%s/file_attachments/attachment/thumbnail/%s', $mediaUrl, $filename);
     }
 
     public function getThumbnailPath(): string
@@ -166,9 +166,12 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements \Mage
 
     protected function getUploadFolderPath($directoryType): string
     {
-        return $this->directoryList->getPath($directoryType)
-            . DIRECTORY_SEPARATOR . 'file_attachments'
-            . DIRECTORY_SEPARATOR . 'attachment';
+        $basePath = $this->directoryList->getPath($directoryType);
+        if ($directoryType === \Magento\Framework\App\Filesystem\DirectoryList::VAR_DIR) {
+            return sprintf('%s/global/file_attachments/attachment', $basePath);
+        }
+
+        return sprintf('%s/file_attachments/attachment', $basePath);
     }
 
     public function getIdentities(): array
