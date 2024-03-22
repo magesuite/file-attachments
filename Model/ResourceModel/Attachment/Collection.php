@@ -5,22 +5,6 @@ namespace MageSuite\FileAttachments\Model\ResourceModel\Attachment;
 
 class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
 {
-    protected \Magento\Store\Model\StoreManagerInterface $storeManager;
-
-    public function __construct(
-        \Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory,
-        \Psr\Log\LoggerInterface $logger,
-        \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
-        \Magento\Framework\Event\ManagerInterface $eventManager,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
-        \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null
-    ) {
-        parent::__construct($entityFactory, $logger, $fetchStrategy, $eventManager, $connection, $resource);
-
-        $this->storeManager = $storeManager;
-    }
-
     protected function _construct(): void
     {
         $this->_init(\MageSuite\FileAttachments\Model\Attachment::class, \MageSuite\FileAttachments\Model\ResourceModel\Attachment::class);
@@ -63,12 +47,45 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         return $this;
     }
 
-    public function addStoreFilter(): self
+    public function addCustomerGroupIdsToResults(): self
     {
-        $storeIds = [
-            \Magento\Store\Model\Store::DEFAULT_STORE_ID,
-            $this->storeManager->getStore()->getId()
-        ];
+        $linkedIds = $this->getAllIds();
+
+        if (empty($linkedIds)) {
+            return $this;
+        }
+
+        $connection = $this->getConnection();
+        $select = $connection->select()
+            ->from($this->getTable('file_attachments_customer_group'))
+            ->where('attachment_id IN (?)', $linkedIds);
+        $result = $connection->fetchAll($select);
+
+        $customerGroupsData = [];
+
+        if ($result) {
+            foreach ($result as $customerGroupData) {
+                $customerGroupsData[$customerGroupData['attachment_id']][] = $customerGroupData['customer_group_id'];
+            }
+        }
+
+        $this->addCustomerGroupsForMissingLinkedIds($linkedIds, $customerGroupsData);
+
+        foreach ($this as $item) {
+            $linkedId = $item->getId();
+
+            if (!isset($customerGroupsData[$linkedId])) {
+                continue;
+            }
+
+            $item->setData('customer_group_ids', $customerGroupsData[$linkedId]);
+        }
+
+        return $this;
+    }
+
+    public function addStoreFilter(array $storeIds): self
+    {
         $this->getSelect()
             ->join(
                 ['fas' => $this->getTable('file_attachments_store')],
@@ -76,6 +93,30 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
                 []
             )
             ->where('fas.store_id IN (?)', $storeIds);
+
+        return $this;
+    }
+
+    public function addCustomerGroupFilter(string|int $customerGroupId): self
+    {
+        $customerGroupAttachments = $this->getConnection()
+            ->select()
+            ->from(['facg' => $this->getTable('file_attachments_customer_group')], 'customer_group_id')
+            ->where('facg.customer_group_id = ?', $customerGroupId)
+            ->query()
+            ->fetchAll();
+
+        if (empty($customerGroupAttachments)) {
+            return $this;
+        }
+
+        $this->getSelect()
+            ->join(
+                ['facg' => $this->getTable('file_attachments_customer_group')],
+                'main_table.attachment_id = facg.attachment_id',
+                []
+            )
+            ->where('facg.customer_group_id = ?', $customerGroupId);
 
         return $this;
     }
@@ -97,5 +138,26 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         $this->getSelect()->order('main_table.sort_order ASC');
 
         return $this;
+    }
+
+    protected function getAllCustomerGroups(): array
+    {
+        return $this->getConnection()->select()
+            ->from($this->getTable('customer_group'), ['customer_group_id'])
+            ->query()
+            ->fetchAll();
+    }
+
+    protected function addCustomerGroupsForMissingLinkedIds(array $linkedIds, array &$customerGroupsData): void
+    {
+        foreach ($linkedIds as $linkedId) {
+            if (isset($customerGroupsData[$linkedId])) {
+                continue;
+            }
+
+            foreach ($this->getAllCustomerGroups() as $customerGroup) {
+                $customerGroupsData[$linkedId][] = $customerGroup['customer_group_id'];
+            }
+        }
     }
 }

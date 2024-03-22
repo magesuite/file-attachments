@@ -20,8 +20,8 @@
 
     <type name="MageSuite\FileAttachments\Model\FileUploader">
         <arguments>
-            <argument name="baseTmpPath" xsi:type="string">file_attachments/tmp/attachment</argument>
-            <argument name="basePath" xsi:type="string">file_attachments/attachment</argument>
+            <argument name="baseTmpPath" xsi:type="string">global/file_attachments/tmp/attachment</argument>
+            <argument name="basePath" xsi:type="string">global/file_attachments/attachment</argument>
             <argument name="allowedExtensions" xsi:type="array">
                 <item name="jpg" xsi:type="string">jpg</item>
                 <item name="jpeg" xsi:type="string">jpeg</item>

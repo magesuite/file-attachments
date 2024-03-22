@@ -15,6 +15,10 @@ class AttachmentRepository implements \MageSuite\FileAttachments\Api\AttachmentR
 
     protected \Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface $collectionProcessor;
 
+    protected \Magento\Customer\Model\Session $customerSession;
+
+    protected \Magento\Store\Model\StoreManagerInterface $storeManager;
+
     protected \Psr\Log\LoggerInterface $logger;
 
     protected array $instancesById = [];
@@ -25,6 +29,8 @@ class AttachmentRepository implements \MageSuite\FileAttachments\Api\AttachmentR
         \MageSuite\FileAttachments\Model\ResourceModel\Attachment\CollectionFactory $collectionFactory,
         \Magento\Framework\Api\SearchResultsInterfaceFactory $searchResultsFactory,
         \Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface $collectionProcessor,
+        \Magento\Customer\Model\Session $customerSession,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Psr\Log\LoggerInterface $logger
     ) {
         $this->attachmentFactory = $attachmentFactory;
@@ -32,6 +38,8 @@ class AttachmentRepository implements \MageSuite\FileAttachments\Api\AttachmentR
         $this->collectionFactory = $collectionFactory;
         $this->searchResultsFactory = $searchResultsFactory;
         $this->collectionProcessor = $collectionProcessor;
+        $this->customerSession = $customerSession;
+        $this->storeManager = $storeManager;
         $this->logger = $logger;
     }
 
@@ -55,7 +63,8 @@ class AttachmentRepository implements \MageSuite\FileAttachments\Api\AttachmentR
     public function getList(\Magento\Framework\Api\SearchCriteriaInterface $criteria)
     {
         $collection = $this->collectionFactory->create();
-        $collection->addStoreFilter();
+        $collection->addStoreFilter($this->getStoreIds());
+        $collection->addCustomerGroupFilter($this->getCustomerGroupId());
         $collection->joinProductTable();
         $collection->sortByOrder();
         $this->collectionProcessor->process($criteria, $collection);
@@ -104,5 +113,18 @@ class AttachmentRepository implements \MageSuite\FileAttachments\Api\AttachmentR
     public function deleteById($attachmentId)
     {
         return $this->delete($this->getById($attachmentId));
+    }
+
+    private function getCustomerGroupId(): string|int
+    {
+        return $this->customerSession->getCustomerGroupId();
+    }
+
+    private function getStoreIds(): array
+    {
+        return [
+            \Magento\Store\Model\Store::DEFAULT_STORE_ID,
+            $this->storeManager->getStore()->getId()
+        ];
     }
 }

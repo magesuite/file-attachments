@@ -6,11 +6,11 @@ namespace MageSuite\FileAttachments\Api;
 interface AttachmentRepositoryInterface
 {
     /**
-     * @param int $attchmentId
+     * @param int $attachmentId
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      * @return \MageSuite\FileAttachments\Api\Data\AttachmentInterface
      */
-    public function getById($attchmentId);
+    public function getById($attachmentId);
 
     /**
      * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
