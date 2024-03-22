@@ -103,10 +103,20 @@ interface AttachmentInterface
     /**
      * @return string
      */
+    public function getDownloadUrl();
+
+    /**
+     * @return string
+     */
     public function getThumbnailUrl();
 
     /**
      * @return string
      */
     public function getThumbnailPath();
+
+    /**
+     * @return array
+     */
+    public function getAllowedCustomerGroupIds();
 }

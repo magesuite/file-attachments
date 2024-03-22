@@ -7,7 +7,7 @@ class FileUploader
 {
     protected \Magento\MediaStorage\Helper\File\Storage\Database $coreFileStorageDatabase;
 
-    protected \Magento\Framework\Filesystem\Directory\WriteInterface $mediaDirectory;
+    protected \Magento\Framework\Filesystem\Directory\WriteInterface $directory;
 
     protected \Magento\MediaStorage\Model\File\UploaderFactory $uploaderFactory;
 
@@ -35,7 +35,7 @@ class FileUploader
         $allowedMimeTypes = []
     ) {
         $this->coreFileStorageDatabase = $coreFileStorageDatabase;
-        $this->mediaDirectory = $filesystem->getDirectoryWrite(\Magento\Framework\App\Filesystem\DirectoryList::MEDIA);
+        $this->directory = $filesystem->getDirectoryWrite(\Magento\Framework\App\Filesystem\DirectoryList::VAR_DIR);
         $this->uploaderFactory = $uploaderFactory;
         $this->storeManager = $storeManager;
         $this->logger = $logger;
@@ -82,13 +82,15 @@ class FileUploader
 
     public function moveFileFromTmp($fileName)
     {
+        $this->createBaseDirectory();
+
         $baseTmpPath = $this->getBaseTmpPath();
         $basePath = $this->getBasePath();
 
         $baseFilePath = $this->getFilePath(
             $basePath,
             \Magento\Framework\File\Uploader::getNewFileName(
-                $this->mediaDirectory->getAbsolutePath(
+                $this->directory->getAbsolutePath(
                     $this->getFilePath($basePath, $fileName)
                 )
             )
@@ -100,7 +102,7 @@ class FileUploader
                 $baseTmpFilePath,
                 $baseFilePath
             );
-            $this->mediaDirectory->renameFile(
+            $this->directory->renameFile(
                 $baseTmpFilePath,
                 $baseFilePath
             );
@@ -115,6 +117,8 @@ class FileUploader
 
     public function saveFileToTmpDir($fileId)
     {
+        $this->createBaseDirectory();
+
         $baseTmpPath = $this->getBaseTmpPath();
 
         /** @var \Magento\MediaStorage\Model\File\Uploader $uploader */
@@ -128,7 +132,7 @@ class FileUploader
             );
         }
 
-        $result = $uploader->save($this->mediaDirectory->getAbsolutePath($baseTmpPath));
+        $result = $uploader->save($this->directory->getAbsolutePath($baseTmpPath));
         unset($result['path']);
 
         if (!$result) {
@@ -158,5 +162,11 @@ class FileUploader
         }
 
         return $result;
+    }
+
+    protected function createBaseDirectory(): void
+    {
+        $this->directory->create($this->getBasePath());
+        $this->directory->create($this->getBaseTmpPath());
     }
 }

@@ -21,6 +21,10 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements \Mage
 
     protected \Magento\Framework\Filesystem\Driver\File $fileDriver;
 
+    protected \Magento\Framework\UrlInterface $urlBuilder;
+
+    protected \MageSuite\FileAttachments\Service\HashAttachmentFilename $hashAttachmentFilename;
+
     public function __construct(
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
@@ -28,6 +32,8 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements \Mage
         \MageSuite\FileAttachments\Model\FileUploader $fileUploader,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\Filesystem\Driver\File $fileDriver,
+        \Magento\Framework\UrlInterface $urlBuilder,
+        \MageSuite\FileAttachments\Service\HashAttachmentFilename $hashAttachmentFilename,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -38,6 +44,8 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements \Mage
         $this->fileUploader = $fileUploader;
         $this->storeManager = $storeManager;
         $this->fileDriver = $fileDriver;
+        $this->urlBuilder = $urlBuilder;
+        $this->hashAttachmentFilename = $hashAttachmentFilename;
     }
 
     protected function _construct()
@@ -121,19 +129,19 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements \Mage
             ->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
         $filename = $this->generateThumbnailFilename($this->getFilename());
 
-        return $mediaUrl . $this->fileUploader->getBasePath() . '/thumbnail/' . $filename;
+        return sprintf('%s/file_attachments/attachment/thumbnail/%s', $mediaUrl, $filename);
     }
 
     public function getThumbnailPath(): string
     {
         $filename = $this->generateThumbnailFilename($this->getFilename());
 
-        return $this->getUploadFolderPath() . DIRECTORY_SEPARATOR . 'thumbnail' . DIRECTORY_SEPARATOR . $filename;
+        return $this->getUploadFolderPath(\Magento\Framework\App\Filesystem\DirectoryList::MEDIA) . DIRECTORY_SEPARATOR . 'thumbnail' . DIRECTORY_SEPARATOR . $filename;
     }
 
     public function getFilePath(): string
     {
-        return $this->getUploadFolderPath() . DIRECTORY_SEPARATOR . $this->getFilename();
+        return $this->getUploadFolderPath(\Magento\Framework\App\Filesystem\DirectoryList::VAR_DIR) . DIRECTORY_SEPARATOR . $this->getFilename();
     }
 
     public function getFileUrl(): string
@@ -144,11 +152,26 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements \Mage
         return $mediaUrl . $this->fileUploader->getBasePath() . '/' . $this->getFilename();
     }
 
-    protected function getUploadFolderPath(): string
+    public function getDownloadUrl(): string
     {
-        return $this->directoryList->getPath(\Magento\Framework\App\Filesystem\DirectoryList::MEDIA)
-            . DIRECTORY_SEPARATOR . 'file_attachments'
-            . DIRECTORY_SEPARATOR . 'attachment';
+        $filenameHash = $this->hashAttachmentFilename->getHashFromFilename($this->getFilename());
+
+        return $this->urlBuilder->getUrl('file_attachments/attachment/download', ['file' => $filenameHash, 'id' => $this->getId()]);
+    }
+
+    public function getAllowedCustomerGroupIds(): array
+    {
+        return $this->getResource()->lookupCustomerGroupIds($this->getId());
+    }
+
+    protected function getUploadFolderPath($directoryType): string
+    {
+        $basePath = $this->directoryList->getPath($directoryType);
+        if ($directoryType === \Magento\Framework\App\Filesystem\DirectoryList::VAR_DIR) {
+            return sprintf('%s/global/file_attachments/attachment', $basePath);
+        }
+
+        return sprintf('%s/file_attachments/attachment', $basePath);
     }
 
     public function getIdentities(): array
