@@ -25,7 +25,7 @@ class DownloadTest extends \Magento\TestFramework\TestCase\AbstractController
     {
         $attachmentId = $this->registry->registry('first_attachment_id');
 
-        $fileNameHash = $this->hashAttachmentFilename->getHashFromFilename('magento_image.jpg');
+        $fileNameHash = '34ca77f4a5f4e11480e874b1fa2dc176ce239ba1af539ddeb2f4f9c4c8b6a4b3';
 
         $uri = sprintf('file_attachments/attachment/download/file/%s/id/%s', $fileNameHash, $attachmentId);
 
@@ -45,7 +45,7 @@ class DownloadTest extends \Magento\TestFramework\TestCase\AbstractController
     {
         $attachmentId = $this->registry->registry('third_attachment_id');
 
-        $fileNameHash = $this->hashAttachmentFilename->getHashFromFilename('magento_image.jpg');
+        $fileNameHash = '34ca77f4a5f4e11480e874b1fa2dc176ce239ba1af539ddeb2f4f9c4c8b6a4b3';
 
         $uri = sprintf('file_attachments/attachment/download/file/%s/id/%s', $fileNameHash, $attachmentId);
 
@@ -63,7 +63,7 @@ class DownloadTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     public function testItDoNotAllowDownloadFileForNotExistingAttachment()
     {
-        $fileNameHash = $this->hashAttachmentFilename->getHashFromFilename('magento_image.jpg');
+        $fileNameHash = '34ca77f4a5f4e11480e874b1fa2dc176ce239ba1af539ddeb2f4f9c4c8b6a4b3';
 
         $uri = sprintf('file_attachments/attachment/download/file/%s/id/%s', $fileNameHash, 200);
 
@@ -84,7 +84,7 @@ class DownloadTest extends \Magento\TestFramework\TestCase\AbstractController
     {
         $attachmentId = $this->registry->registry('first_attachment_id');
 
-        $fileNameHash = $this->hashAttachmentFilename->getHashFromFilename('magento_image_wrong_filename.jpg');
+        $fileNameHash = 'wrongHash1234';
 
         $uri = sprintf('file_attachments/attachment/download/file/%s/id/%s', $fileNameHash, $attachmentId);
 
