@@ -144,6 +144,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
     {
         return $this->getConnection()->select()
             ->from($this->getTable('customer_group'), ['customer_group_id'])
+            ->order('customer_group_id')
             ->query()
             ->fetchAll();
     }
