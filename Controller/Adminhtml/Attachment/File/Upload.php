@@ -1,10 +1,13 @@
 <?php
+
 declare(strict_types=1);
 
 namespace MageSuite\FileAttachments\Controller\Adminhtml\Attachment\File;
 
 class Upload extends \Magento\Backend\App\Action implements \Magento\Framework\App\Action\HttpPostActionInterface
 {
+    public const ADMIN_RESOURCE = 'MageSuite_FileAttachments::attachment';
+
     protected \MageSuite\FileAttachments\Model\FileUploader $fileUploader;
 
     public function __construct(
