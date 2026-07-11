@@ -34,8 +34,8 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements \Mage
         \Magento\Framework\Filesystem\Driver\File $fileDriver,
         \Magento\Framework\UrlInterface $urlBuilder,
         \MageSuite\FileAttachments\Service\HashAttachmentFilename $hashAttachmentFilename,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        ?\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        ?\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
