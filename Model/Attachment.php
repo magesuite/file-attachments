@@ -28,8 +28,8 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements \Mage
         \MageSuite\FileAttachments\Model\FileUploader $fileUploader,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\Filesystem\Driver\File $fileDriver,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        ?\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        ?\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
