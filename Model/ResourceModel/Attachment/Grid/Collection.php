@@ -65,7 +65,18 @@ class Collection extends \Magento\Framework\View\Element\UiComponent\DataProvide
 
         foreach ($this->getItems() as $item) {
             $attachmentId = $item->getData('attachment_id');
-            $item->setData(self::STORE_FIELD, $storeIds[$attachmentId] ?? []);
+            $item->setData(self::STORE_FIELD, $this->normalizeStoreIds($storeIds[$attachmentId] ?? []));
         }
+    }
+
+    protected function normalizeStoreIds(array $storeIds): array
+    {
+        $storeIds = array_map('intval', $storeIds);
+
+        if (in_array(\Magento\Store\Model\Store::DEFAULT_STORE_ID, $storeIds, true)) {
+            return [\Magento\Store\Model\Store::DEFAULT_STORE_ID];
+        }
+
+        return $storeIds;
     }
 }

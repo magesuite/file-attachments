@@ -23,14 +23,24 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
     public function testItExposesAssignedStoreViewsOnEveryRow(): void
     {
         $adminAttachmentId = $this->createAttachment([self::ADMIN_STORE_ID]);
-        $bothStoresAttachmentId = $this->createAttachment([self::ADMIN_STORE_ID, self::DEFAULT_STORE_ID]);
+        $defaultStoreAttachmentId = $this->createAttachment([self::DEFAULT_STORE_ID]);
 
         $storeIdsByAttachmentId = $this->loadStoreIdsByAttachmentId($this->createGridCollection());
 
         $this->assertEquals([self::ADMIN_STORE_ID], $storeIdsByAttachmentId[$adminAttachmentId]);
+        $this->assertEquals([self::DEFAULT_STORE_ID], $storeIdsByAttachmentId[$defaultStoreAttachmentId]);
+    }
+
+    public function testItCollapsesAllStoreViewsAssignmentForTheRenderer(): void
+    {
+        $attachmentId = $this->createAttachment([self::ADMIN_STORE_ID, self::DEFAULT_STORE_ID]);
+
+        $storeIdsByAttachmentId = $this->loadStoreIdsByAttachmentId($this->createGridCollection());
+
+        $this->assertEquals([self::ADMIN_STORE_ID], $storeIdsByAttachmentId[$attachmentId]);
         $this->assertEqualsCanonicalizing(
             [self::ADMIN_STORE_ID, self::DEFAULT_STORE_ID],
-            $storeIdsByAttachmentId[$bothStoresAttachmentId]
+            array_map('intval', $this->attachmentResource->lookupStoreIds($attachmentId))
         );
     }
 

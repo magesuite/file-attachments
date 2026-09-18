@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace MageSuite\FileAttachments\Model\ResourceModel;
@@ -22,7 +23,7 @@ class Attachment extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         $this->customerGroupTable = $this->getTable('file_attachments_customer_group');
     }
 
-    public function getProductAttachmentIds($productId): array
+    public function getProductAttachmentIds(mixed $productId): array
     {
         $select = $this->getConnection()
             ->select()
@@ -108,7 +109,7 @@ class Attachment extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         );
     }
 
-    public function lookupStoreIds($id): array
+    public function lookupStoreIds(mixed $id): array
     {
         $connection = $this->getConnection();
         $select = $connection->select()
@@ -196,7 +197,7 @@ class Attachment extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         }
     }
 
-    protected function _afterSave(\Magento\Framework\Model\AbstractModel $object)
+    protected function _afterSave(\Magento\Framework\Model\AbstractModel $object): self
     {
         $connection = $this->getConnection();
 
@@ -206,7 +207,7 @@ class Attachment extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         return parent::_afterSave($object);
     }
 
-    protected function _afterLoad(\Magento\Framework\Model\AbstractModel $object)
+    protected function _afterLoad(\Magento\Framework\Model\AbstractModel $object): self
     {
         if ($object->getId()) {
             $stores = $this->lookupStoreIds((int)$object->getId());
