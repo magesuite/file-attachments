@@ -83,6 +83,20 @@ class AssignStoresTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals([self::ADMIN_STORE_ID], $this->getAssignedStoreIds($secondAttachmentId));
     }
 
+    #[\Magento\TestFramework\Fixture\Config('general/single_store_mode/enabled', '1', 'store', 'default')]
+    public function testItAssignsToDefaultScopeWhenSingleStoreModeHidesTheSelector(): void
+    {
+        $attachmentId = $this->createAttachment([self::DEFAULT_STORE_ID]);
+
+        $this->assignStores->execute(
+            [$attachmentId],
+            [],
+            \MageSuite\FileAttachments\Model\Attachment\StoreAssignmentMode::REPLACE
+        );
+
+        $this->assertEquals([self::ADMIN_STORE_ID], $this->getAssignedStoreIds($attachmentId));
+    }
+
     public function testItRejectsEmptyStoreViewSelection(): void
     {
         $attachmentId = $this->createAttachment([self::DEFAULT_STORE_ID]);

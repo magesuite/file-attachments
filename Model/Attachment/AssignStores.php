@@ -7,7 +7,8 @@ namespace MageSuite\FileAttachments\Model\Attachment;
 class AssignStores
 {
     public function __construct(
-        protected \MageSuite\FileAttachments\Model\ResourceModel\Attachment $attachmentResource
+        protected \MageSuite\FileAttachments\Model\ResourceModel\Attachment $attachmentResource,
+        protected \Magento\Store\Model\StoreManagerInterface $storeManager
     ) {
     }
 
@@ -17,10 +18,7 @@ class AssignStores
             throw new \Magento\Framework\Exception\InputException(__('Please select at least one attachment.'));
         }
 
-        if (empty($storeIds)) {
-            throw new \Magento\Framework\Exception\InputException(__('Please select at least one store view.'));
-        }
-
+        $storeIds = $this->resolveStoreIds($storeIds);
         $connection = $this->attachmentResource->getConnection();
 
         try {
@@ -36,5 +34,18 @@ class AssignStores
 
             throw $exception;
         }
+    }
+
+    protected function resolveStoreIds(array $storeIds): array
+    {
+        if (!empty($storeIds)) {
+            return $storeIds;
+        }
+
+        if ($this->storeManager->isSingleStoreMode()) {
+            return [\Magento\Store\Model\Store::DEFAULT_STORE_ID];
+        }
+
+        throw new \Magento\Framework\Exception\InputException(__('Please select at least one store view.'));
     }
 }
