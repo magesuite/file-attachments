@@ -124,7 +124,7 @@ class Attachment extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         return $connection->fetchCol($select, ['attachment_id' => (int)$id]);
     }
 
-    public function lookupCustomerGroupIds($id): array
+    public function lookupCustomerGroupIds(mixed $id): array
     {
         $connection = $this->getConnection();
         $select = $connection->select()
@@ -139,7 +139,7 @@ class Attachment extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         return $connection->fetchCol($select, ['attachment_id' => (int)$id]);
     }
 
-    protected function insertStores($object, $connection)
+    protected function insertStores(\Magento\Framework\Model\AbstractModel $object, \Magento\Framework\DB\Adapter\AdapterInterface $connection): void
     {
         $oldStores = $this->lookupStoreIds((int)$object->getId());
         $newStores = (array)$object->getStoreIds();
@@ -168,7 +168,7 @@ class Attachment extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         }
     }
 
-    protected function insertCustomerGroups($object, $connection)
+    protected function insertCustomerGroups(\Magento\Framework\Model\AbstractModel $object, \Magento\Framework\DB\Adapter\AdapterInterface $connection): void
     {
         $oldCustomerGroups = $this->lookupCustomerGroupIds((int)$object->getId());
         $newCustomerGroups = (array)$object->getCustomerGroupIds();
