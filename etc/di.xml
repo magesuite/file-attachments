@@ -7,6 +7,7 @@
         <arguments>
             <argument name="collections" xsi:type="array">
                 <item name="fileattachments_attachment_listing_data_source" xsi:type="string">MageSuite\FileAttachments\Model\ResourceModel\Attachment\Grid\Collection</item>
+                <item name="fileattachments_attachment_assign_stores_form_data_source" xsi:type="string">MageSuite\FileAttachments\Model\ResourceModel\Attachment\Grid\Collection</item>
             </argument>
         </arguments>
     </type>

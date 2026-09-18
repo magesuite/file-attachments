@@ -21,7 +21,7 @@
         <settings>
             <submitUrl path="fileattachments/attachment/massAssignStoresSave"/>
         </settings>
-        <dataProvider class="MageSuite\FileAttachments\Ui\DataProvider\AssignStoresDataProvider" name="fileattachments_attachment_assign_stores_form_data_source">
+        <dataProvider class="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider" name="fileattachments_attachment_assign_stores_form_data_source">
             <settings>
                 <requestFieldName>attachment_id</requestFieldName>
                 <primaryFieldName>attachment_id</primaryFieldName>
