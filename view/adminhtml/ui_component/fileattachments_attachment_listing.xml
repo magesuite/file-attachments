@@ -40,6 +40,26 @@
         <bookmark name="bookmarks"/>
         <columnsControls name="columns_controls"/>
         <filters name="listing_filters"/>
+        <massaction name="listing_massaction">
+            <action name="delete">
+                <settings>
+                    <confirm>
+                        <title translate="true">Delete attachments</title>
+                        <message translate="true">Are you sure you want to delete the selected attachments?</message>
+                    </confirm>
+                    <url path="fileattachments/attachment/massDelete"/>
+                    <type>delete</type>
+                    <label translate="true">Delete</label>
+                </settings>
+            </action>
+            <action name="assign_stores">
+                <settings>
+                    <url path="fileattachments/attachment/massAssignStores"/>
+                    <type>assign_stores</type>
+                    <label translate="true">Assign Store Views</label>
+                </settings>
+            </action>
+        </massaction>
         <paging name="listing_paging"/>
     </listingToolbar>
     <columns name="fileattachments_attachment_columns">
@@ -55,6 +75,11 @@
                 </param>
             </childDefaults>
         </settings>
+        <selectionsColumn name="ids" sortOrder="0">
+            <settings>
+                <indexField>attachment_id</indexField>
+            </settings>
+        </selectionsColumn>
         <column name="attachment_id" sortOrder="10">
             <settings>
                 <filter>textRange</filter>
@@ -80,6 +105,13 @@
                 <filter>text</filter>
                 <bodyTmpl>ui/grid/cells/text</bodyTmpl>
                 <label translate="true">Name</label>
+            </settings>
+        </column>
+        <column name="store_id" class="Magento\Store\Ui\Component\Listing\Column\Store" sortOrder="45">
+            <settings>
+                <bodyTmpl>ui/grid/cells/html</bodyTmpl>
+                <sortable>false</sortable>
+                <label translate="true">Store View</label>
             </settings>
         </column>
         <column name="sort_order" sortOrder="50">
