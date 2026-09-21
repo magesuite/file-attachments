@@ -1,10 +1,13 @@
 <?php
+
 declare(strict_types=1);
 
 namespace MageSuite\FileAttachments\Model\ResourceModel;
 
 class Attachment extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
+    public const ASSIGNMENT_BATCH_ROWS = 50000;
+
     protected string $storeTable;
 
     protected string $productTable;
@@ -20,7 +23,7 @@ class Attachment extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         $this->customerGroupTable = $this->getTable('file_attachments_customer_group');
     }
 
-    public function getProductAttachmentIds($productId): array
+    public function getProductAttachmentIds(mixed $productId): array
     {
         $select = $this->getConnection()
             ->select()
@@ -61,7 +64,52 @@ class Attachment extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         return $this;
     }
 
-    public function lookupStoreIds($id): array
+    public function assignStoresToAttachments(array $attachmentIds, array $storeIds, bool $replaceExisting): void
+    {
+        if (empty($attachmentIds) || empty($storeIds)) {
+            return;
+        }
+
+        $batches = array_chunk($attachmentIds, $this->getAttachmentBatchSize($storeIds));
+        foreach ($batches as $attachmentIdsBatch) {
+            if ($replaceExisting) {
+                $this->deleteStoreAssignments($attachmentIdsBatch);
+            }
+
+            $this->insertStoreAssignments($attachmentIdsBatch, $storeIds);
+        }
+    }
+
+    protected function getAttachmentBatchSize(array $storeIds): int
+    {
+        return max(1, intdiv(self::ASSIGNMENT_BATCH_ROWS, count($storeIds)));
+    }
+
+    protected function deleteStoreAssignments(array $attachmentIds): void
+    {
+        $this->getConnection()->delete($this->storeTable, ['attachment_id IN (?)' => $attachmentIds]);
+    }
+
+    protected function insertStoreAssignments(array $attachmentIds, array $storeIds): void
+    {
+        $connection = $this->getConnection();
+        $select = $connection->select()
+            ->from(['fa' => $this->getMainTable()], ['attachment_id'])
+            ->joinCross(['s' => $this->getTable('store')], ['store_id'])
+            ->where('fa.attachment_id IN (?)', $attachmentIds)
+            ->where('s.store_id IN (?)', $storeIds);
+
+        $connection->query(
+            $connection->insertFromSelect(
+                $select,
+                $this->storeTable,
+                ['attachment_id', 'store_id'],
+                \Magento\Framework\DB\Adapter\AdapterInterface::INSERT_ON_DUPLICATE
+            )
+        );
+    }
+
+    public function lookupStoreIds(mixed $id): array
     {
         $connection = $this->getConnection();
         $select = $connection->select()
@@ -76,7 +124,7 @@ class Attachment extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         return $connection->fetchCol($select, ['attachment_id' => (int)$id]);
     }
 
-    public function lookupCustomerGroupIds($id): array
+    public function lookupCustomerGroupIds(mixed $id): array
     {
         $connection = $this->getConnection();
         $select = $connection->select()
@@ -91,7 +139,7 @@ class Attachment extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         return $connection->fetchCol($select, ['attachment_id' => (int)$id]);
     }
 
-    protected function insertStores($object, $connection)
+    protected function insertStores(\Magento\Framework\Model\AbstractModel $object, \Magento\Framework\DB\Adapter\AdapterInterface $connection): void
     {
         $oldStores = $this->lookupStoreIds((int)$object->getId());
         $newStores = (array)$object->getStoreIds();
@@ -120,7 +168,7 @@ class Attachment extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         }
     }
 
-    protected function insertCustomerGroups($object, $connection)
+    protected function insertCustomerGroups(\Magento\Framework\Model\AbstractModel $object, \Magento\Framework\DB\Adapter\AdapterInterface $connection): void
     {
         $oldCustomerGroups = $this->lookupCustomerGroupIds((int)$object->getId());
         $newCustomerGroups = (array)$object->getCustomerGroupIds();
@@ -149,7 +197,7 @@ class Attachment extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         }
     }
 
-    protected function _afterSave(\Magento\Framework\Model\AbstractModel $object)
+    protected function _afterSave(\Magento\Framework\Model\AbstractModel $object): self
     {
         $connection = $this->getConnection();
 
@@ -159,7 +207,7 @@ class Attachment extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         return parent::_afterSave($object);
     }
 
-    protected function _afterLoad(\Magento\Framework\Model\AbstractModel $object)
+    protected function _afterLoad(\Magento\Framework\Model\AbstractModel $object): self
     {
         if ($object->getId()) {
             $stores = $this->lookupStoreIds((int)$object->getId());

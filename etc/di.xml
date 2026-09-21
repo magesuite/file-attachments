@@ -7,16 +7,17 @@
         <arguments>
             <argument name="collections" xsi:type="array">
                 <item name="fileattachments_attachment_listing_data_source" xsi:type="string">MageSuite\FileAttachments\Model\ResourceModel\Attachment\Grid\Collection</item>
+                <item name="fileattachments_attachment_assign_stores_form_data_source" xsi:type="string">MageSuite\FileAttachments\Model\ResourceModel\Attachment\Grid\Collection</item>
             </argument>
         </arguments>
     </type>
 
-    <virtualType name="MageSuite\FileAttachments\Model\ResourceModel\Attachment\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+    <type name="MageSuite\FileAttachments\Model\ResourceModel\Attachment\Grid\Collection">
         <arguments>
             <argument name="mainTable" xsi:type="string">file_attachments</argument>
             <argument name="resourceModel" xsi:type="string">MageSuite\FileAttachments\Model\ResourceModel\Attachment</argument>
         </arguments>
-    </virtualType>
+    </type>
 
     <type name="MageSuite\FileAttachments\Model\FileUploader">
         <arguments>

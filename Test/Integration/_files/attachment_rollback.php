@@ -1,11 +1,25 @@
 <?php
+
 declare(strict_types=1);
 
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 $registry = $objectManager->get(\Magento\Framework\Registry::class);
-$attachmentId = $registry->registry('attachmentId');
-$attachmentId = $registry->registry('first_attachment');
-$attachmentId = $registry->registry('second_attachment');
-$attachmentId = $registry->registry('third_attachment');
 $attachmentRepository = $objectManager->get(\MageSuite\FileAttachments\Api\AttachmentRepositoryInterface::class);
-$attachmentRepository->deleteById($attachmentId);
+
+$registryKeys = ['attachmentId', 'first_attachment_id', 'second_attachment_id', 'third_attachment_id'];
+
+foreach ($registryKeys as $registryKey) {
+    $attachmentId = $registry->registry($registryKey);
+
+    if (!$attachmentId) {
+        continue;
+    }
+
+    try {
+        $attachmentRepository->deleteById($attachmentId);
+    } catch (\Magento\Framework\Exception\NoSuchEntityException $exception) {
+        // Attachment already removed
+    }
+
+    $registry->unregister($registryKey);
+}
