@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace MageSuite\FileAttachments\Controller\Attachment;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class Download extends \Magento\Framework\App\Action\Action
 {
     public function __construct(
