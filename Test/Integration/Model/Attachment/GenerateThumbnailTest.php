@@ -34,7 +34,7 @@ class GenerateThumbnailTest extends \PHPUnit\Framework\TestCase
         $ImagePath = realpath(__DIR__ . '/../../assets') . '/magento_image.jpg';
 
         $attachmentId = $this->registry->registry('attachmentId');
-        $attachment = $this->attachmentRepository->getById($attachmentId);
+        $attachment = $this->attachmentRepository->getById((int)$attachmentId);
 
         $this->generateThumbnail->execute($attachment);
 

@@ -43,7 +43,7 @@ class AttachmentTest extends \PHPUnit\Framework\TestCase
 
         $attachment = array_shift($attachmentList);
 
-        $attachment = $this->attachmentRepository->getById($attachment->getId());
+        $attachment = $this->attachmentRepository->getById((int)$attachment->getId());
 
         $this->assertEquals('first_attachment', $attachment->getName());
         $this->assertEquals('magento_image.jpg', $attachment->getFilename());
@@ -67,7 +67,7 @@ class AttachmentTest extends \PHPUnit\Framework\TestCase
 
         $attachmentPrefix = ['first', 'second'];
         foreach ($attachmentList as $i => $attachment) {
-            $attachment = $this->attachmentRepository->getById($attachment->getId());
+            $attachment = $this->attachmentRepository->getById((int)$attachment->getId());
 
             $this->assertEquals(sprintf('%s_attachment', $attachmentPrefix[$i]), $attachment->getName());
             $this->assertEquals('magento_image.jpg', $attachment->getFilename());

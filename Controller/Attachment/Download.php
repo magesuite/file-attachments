@@ -36,7 +36,7 @@ class Download extends \Magento\Framework\App\Action\Action
     {
         try {
             $fileNameHash = $this->getRequest()->getParam('file');
-            $id = $this->getRequest()->getParam('id');
+            $id = (int)$this->getRequest()->getParam('id');
             $attachment = $this->attachmentRepository->getById($id);
 
             if (!$this->validateAttachment($attachment, $fileNameHash)) {

@@ -1,49 +1,26 @@
 <?php
+
 declare(strict_types=1);
 
 namespace MageSuite\FileAttachments\Model;
 
 class AttachmentRepository implements \MageSuite\FileAttachments\Api\AttachmentRepositoryInterface
 {
-    protected \MageSuite\FileAttachments\Model\AttachmentFactory $attachmentFactory;
-
-    protected \MageSuite\FileAttachments\Model\ResourceModel\Attachment $attachmentResource;
-
-    protected \MageSuite\FileAttachments\Model\ResourceModel\Attachment\CollectionFactory $collectionFactory;
-
-    protected \Magento\Framework\Api\SearchResultsInterfaceFactory $searchResultsFactory;
-
-    protected \Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface $collectionProcessor;
-
-    protected \Magento\Customer\Model\Session $customerSession;
-
-    protected \Magento\Store\Model\StoreManagerInterface $storeManager;
-
-    protected \Psr\Log\LoggerInterface $logger;
-
     protected array $instancesById = [];
 
     public function __construct(
-        \MageSuite\FileAttachments\Model\AttachmentFactory $attachmentFactory,
-        \MageSuite\FileAttachments\Model\ResourceModel\Attachment $attachmentResource,
-        \MageSuite\FileAttachments\Model\ResourceModel\Attachment\CollectionFactory $collectionFactory,
-        \Magento\Framework\Api\SearchResultsInterfaceFactory $searchResultsFactory,
-        \Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface $collectionProcessor,
-        \Magento\Customer\Model\Session $customerSession,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Psr\Log\LoggerInterface $logger
+        protected \MageSuite\FileAttachments\Model\AttachmentFactory $attachmentFactory,
+        protected \MageSuite\FileAttachments\Model\ResourceModel\Attachment $attachmentResource,
+        protected \MageSuite\FileAttachments\Model\ResourceModel\Attachment\CollectionFactory $collectionFactory,
+        protected \Magento\Framework\Api\SearchResultsInterfaceFactory $searchResultsFactory,
+        protected \Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface $collectionProcessor,
+        protected \Magento\Customer\Model\Session $customerSession,
+        protected \Magento\Store\Model\StoreManagerInterface $storeManager,
+        protected \Psr\Log\LoggerInterface $logger
     ) {
-        $this->attachmentFactory = $attachmentFactory;
-        $this->attachmentResource = $attachmentResource;
-        $this->collectionFactory = $collectionFactory;
-        $this->searchResultsFactory = $searchResultsFactory;
-        $this->collectionProcessor = $collectionProcessor;
-        $this->customerSession = $customerSession;
-        $this->storeManager = $storeManager;
-        $this->logger = $logger;
     }
 
-    public function getById($attachmentId)
+    public function getById(int $attachmentId): \MageSuite\FileAttachments\Api\Data\AttachmentInterface
     {
         if (!isset($this->instancesById[$attachmentId])) {
             $attachment = $this->attachmentFactory->create();
@@ -60,7 +37,7 @@ class AttachmentRepository implements \MageSuite\FileAttachments\Api\AttachmentR
         return $this->instancesById[$attachmentId];
     }
 
-    public function getList(\Magento\Framework\Api\SearchCriteriaInterface $criteria)
+    public function getList(\Magento\Framework\Api\SearchCriteriaInterface $criteria): \Magento\Framework\Api\SearchResultsInterface
     {
         $collection = $this->collectionFactory->create();
         $collection->addStoreFilter($this->getStoreIds());
@@ -81,7 +58,7 @@ class AttachmentRepository implements \MageSuite\FileAttachments\Api\AttachmentR
         return $searchResults;
     }
 
-    public function save(\MageSuite\FileAttachments\Api\Data\AttachmentInterface $attachment)
+    public function save(\MageSuite\FileAttachments\Api\Data\AttachmentInterface $attachment): \MageSuite\FileAttachments\Api\Data\AttachmentInterface
     {
         try {
             $this->attachmentResource->save($attachment);

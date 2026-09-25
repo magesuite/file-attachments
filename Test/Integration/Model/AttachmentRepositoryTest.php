@@ -27,7 +27,7 @@ class AttachmentRepositoryTest extends \PHPUnit\Framework\TestCase
     public function testItGeneratesProperThumbnailImage(): void
     {
         $attachmentId = $this->registry->registry('attachmentId');
-        $attachment = $this->attachmentRepository->getById($attachmentId);
+        $attachment = $this->attachmentRepository->getById((int)$attachmentId);
 
         $this->assertEquals('Name', $attachment->getName());
         $this->assertEquals('magento_image.jpg', $attachment->getFilename());
@@ -41,7 +41,7 @@ class AttachmentRepositoryTest extends \PHPUnit\Framework\TestCase
     public function testItReturnCorrectGroupsForAttachments(): void
     {
         $attachmentId = $this->registry->registry('first_attachment_id');
-        $attachment = $this->attachmentRepository->getById($attachmentId);
+        $attachment = $this->attachmentRepository->getById((int)$attachmentId);
 
         $this->assertEquals('first_attachment', $attachment->getName());
         $this->assertEquals('magento_image.jpg', $attachment->getFilename());
@@ -50,7 +50,7 @@ class AttachmentRepositoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals([0, 1], $attachment->getCustomerGroupIds());
 
         $attachmentId = $this->registry->registry('second_attachment_id');
-        $attachment = $this->attachmentRepository->getById($attachmentId);
+        $attachment = $this->attachmentRepository->getById((int)$attachmentId);
 
         $this->assertEquals('second_attachment', $attachment->getName());
         $this->assertEquals('magento_image.jpg', $attachment->getFilename());
@@ -59,7 +59,7 @@ class AttachmentRepositoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals([1, 2], $attachment->getCustomerGroupIds());
 
         $attachmentId = $this->registry->registry('third_attachment_id');
-        $attachment = $this->attachmentRepository->getById($attachmentId);
+        $attachment = $this->attachmentRepository->getById((int)$attachmentId);
 
         $this->assertEquals('third_attachment', $attachment->getName());
         $this->assertEquals('magento_image.jpg', $attachment->getFilename());
