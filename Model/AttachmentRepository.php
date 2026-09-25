@@ -112,7 +112,7 @@ class AttachmentRepository implements \MageSuite\FileAttachments\Api\AttachmentR
         return true;
     }
 
-    public function deleteById($attachmentId): bool
+    public function deleteById(int $attachmentId): bool
     {
         return $this->delete($this->getById($attachmentId));
     }

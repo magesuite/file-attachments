@@ -41,5 +41,5 @@ interface AttachmentRepositoryInterface
      * @throws \Magento\Framework\Exception\CouldNotSaveException
      * @return bool
      */
-    public function deleteById($attachmentId);
+    public function deleteById(int $attachmentId): bool;
 }

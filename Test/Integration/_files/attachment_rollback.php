@@ -16,7 +16,7 @@ foreach ($registryKeys as $registryKey) {
     }
 
     try {
-        $attachmentRepository->deleteById($attachmentId);
+        $attachmentRepository->deleteById((int)$attachmentId);
     } catch (\Magento\Framework\Exception\NoSuchEntityException $exception) {
         // Attachment already removed
     }
