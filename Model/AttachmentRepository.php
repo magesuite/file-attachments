@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace MageSuite\FileAttachments\Model;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class AttachmentRepository implements \MageSuite\FileAttachments\Api\AttachmentRepositoryInterface
 {
     protected array $instancesById = [];
@@ -94,12 +97,12 @@ class AttachmentRepository implements \MageSuite\FileAttachments\Api\AttachmentR
         return $this->delete($this->getById($attachmentId));
     }
 
-    private function getCustomerGroupId(): string|int
+    protected function getCustomerGroupId(): string|int
     {
         return $this->customerSession->getCustomerGroupId();
     }
 
-    private function getStoreIds(): array
+    protected function getStoreIds(): array
     {
         return [
             \Magento\Store\Model\Store::DEFAULT_STORE_ID,
