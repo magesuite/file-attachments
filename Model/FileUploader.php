@@ -1,81 +1,63 @@
 <?php
+
 declare(strict_types=1);
 
 namespace MageSuite\FileAttachments\Model;
 
 class FileUploader
 {
-    protected \Magento\MediaStorage\Helper\File\Storage\Database $coreFileStorageDatabase;
-
     protected \Magento\Framework\Filesystem\Directory\WriteInterface $directory;
 
-    protected \Magento\MediaStorage\Model\File\UploaderFactory $uploaderFactory;
-
-    protected \Magento\Store\Model\StoreManagerInterface $storeManager;
-
-    protected \Psr\Log\LoggerInterface $logger;
-
-    protected string $baseTmpPath;
-
-    protected string $basePath;
-
-    protected array $allowedExtensions;
-
-    protected array $allowedMimeTypes;
-
     public function __construct(
-        \Magento\MediaStorage\Helper\File\Storage\Database $coreFileStorageDatabase,
+        protected \Magento\MediaStorage\Helper\File\Storage\Database $coreFileStorageDatabase,
         \Magento\Framework\Filesystem $filesystem,
-        \Magento\MediaStorage\Model\File\UploaderFactory $uploaderFactory,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Psr\Log\LoggerInterface $logger,
-        string $baseTmpPath,
-        string $basePath,
-        $allowedExtensions = [],
-        $allowedMimeTypes = []
+        protected \Magento\MediaStorage\Model\File\UploaderFactory $uploaderFactory,
+        protected \Magento\Store\Model\StoreManagerInterface $storeManager,
+        protected \Psr\Log\LoggerInterface $logger,
+        protected string $baseTmpPath,
+        protected string $basePath,
+        protected array $allowedExtensions = [],
+        protected array $allowedMimeTypes = []
     ) {
-        $this->coreFileStorageDatabase = $coreFileStorageDatabase;
         $this->directory = $filesystem->getDirectoryWrite(\Magento\Framework\App\Filesystem\DirectoryList::VAR_DIR);
-        $this->uploaderFactory = $uploaderFactory;
-        $this->storeManager = $storeManager;
-        $this->logger = $logger;
-        $this->baseTmpPath = $baseTmpPath;
-        $this->basePath = $basePath;
-        $this->allowedExtensions = $allowedExtensions;
-        $this->allowedMimeTypes = $allowedMimeTypes;
     }
 
-    public function setBaseTmpPath($baseTmpPath)
+    public function setBaseTmpPath(string $baseTmpPath): void
     {
         $this->baseTmpPath = $baseTmpPath;
     }
 
-    public function setBasePath($basePath)
+    public function setBasePath(string $basePath): void
     {
         $this->basePath = $basePath;
     }
 
-    public function setAllowedExtensions($allowedExtensions)
+    public function setAllowedExtensions(array $allowedExtensions): void
     {
         $this->allowedExtensions = $allowedExtensions;
     }
 
-    public function getBaseTmpPath()
+    public function getBaseTmpPath(): string
     {
         return $this->baseTmpPath;
     }
 
-    public function getBasePath()
+    public function getBasePath(): string
     {
         return $this->basePath;
     }
 
-    public function getAllowedExtensions()
+    public function getAllowedExtensions(): array
     {
         return $this->allowedExtensions;
     }
 
-    public function getFilePath($path, $fileName)
+    public function getAllowedMimeTypes(): array
+    {
+        return $this->allowedMimeTypes;
+    }
+
+    public function getFilePath(string $path, string $fileName): string
     {
         return rtrim($path, '/') . '/' . ltrim($fileName, '/');
     }

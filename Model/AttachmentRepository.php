@@ -93,10 +93,12 @@ class AttachmentRepository implements \MageSuite\FileAttachments\Api\AttachmentR
             );
         }
 
+        unset($this->instancesById[$attachment->getId()]);
+
         return $attachment;
     }
 
-    public function delete(\MageSuite\FileAttachments\Api\Data\AttachmentInterface $attachment)
+    public function delete(\MageSuite\FileAttachments\Api\Data\AttachmentInterface $attachment): bool
     {
         try {
             $this->attachmentResource->delete($attachment);
@@ -110,7 +112,7 @@ class AttachmentRepository implements \MageSuite\FileAttachments\Api\AttachmentR
         return true;
     }
 
-    public function deleteById($attachmentId)
+    public function deleteById($attachmentId): bool
     {
         return $this->delete($this->getById($attachmentId));
     }

@@ -10,7 +10,11 @@
                         </resource>
                     </resource>
                 </resource>
-                <resource id="MageSuite_FileAttachments::attachment" title="Manage File Attachments" translate="title" sortOrder="10"/>
+                <resource id="MageSuite_FileAttachments::attachment" title="Manage File Attachments" translate="title" sortOrder="10">
+                    <resource id="MageSuite_FileAttachments::attachment_view" title="View File Attachments" translate="title" sortOrder="10"/>
+                    <resource id="MageSuite_FileAttachments::attachment_save" title="Save File Attachments" translate="title" sortOrder="20"/>
+                    <resource id="MageSuite_FileAttachments::attachment_delete" title="Delete File Attachments" translate="title" sortOrder="30"/>
+                </resource>
             </resource>
         </resources>
     </acl>

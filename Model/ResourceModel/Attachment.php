@@ -139,6 +139,22 @@ class Attachment extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         return $connection->fetchCol($select, ['attachment_id' => (int)$id]);
     }
 
+    public function lookupProductSkus(mixed $id): array
+    {
+        $connection = $this->getConnection();
+        $select = $connection->select()
+            ->from(['fap' => $this->productTable], [])
+            ->join(
+                ['cpe' => $this->getTable('catalog_product_entity')],
+                'fap.product_id = cpe.entity_id',
+                ['sku']
+            )
+            ->where('fap.attachment_id = :attachment_id')
+            ->order('cpe.sku ASC');
+
+        return $connection->fetchCol($select, ['attachment_id' => (int)$id]);
+    }
+
     protected function insertStores(\Magento\Framework\Model\AbstractModel $object, \Magento\Framework\DB\Adapter\AdapterInterface $connection): void
     {
         $oldStores = $this->lookupStoreIds((int)$object->getId());

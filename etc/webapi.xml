@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route url="/V1/file-attachments" method="GET">
+        <service class="MageSuite\FileAttachments\Api\AttachmentManagementInterface" method="getList"/>
+        <resources>
+            <resource ref="MageSuite_FileAttachments::attachment_view"/>
+        </resources>
+    </route>
+    <route url="/V1/file-attachments" method="POST">
+        <service class="MageSuite\FileAttachments\Api\AttachmentManagementInterface" method="save"/>
+        <resources>
+            <resource ref="MageSuite_FileAttachments::attachment_save"/>
+        </resources>
+    </route>
+    <route url="/V1/file-attachments/:attachmentId" method="PUT">
+        <service class="MageSuite\FileAttachments\Api\AttachmentManagementInterface" method="save"/>
+        <resources>
+            <resource ref="MageSuite_FileAttachments::attachment_save"/>
+        </resources>
+    </route>
+    <route url="/V1/file-attachments/:attachmentId" method="DELETE">
+        <service class="MageSuite\FileAttachments\Api\AttachmentManagementInterface" method="deleteById"/>
+        <resources>
+            <resource ref="MageSuite_FileAttachments::attachment_delete"/>
+        </resources>
+    </route>
+    <route url="/V1/products/:sku/file-attachments" method="GET">
+        <service class="MageSuite\FileAttachments\Api\ProductAttachmentLinkManagementInterface" method="getList"/>
+        <resources>
+            <resource ref="MageSuite_FileAttachments::attachment_view"/>
+        </resources>
+    </route>
+    <route url="/V1/products/:sku/file-attachments" method="POST">
+        <service class="MageSuite\FileAttachments\Api\ProductAttachmentLinkManagementInterface" method="assign"/>
+        <resources>
+            <resource ref="MageSuite_FileAttachments::attachment_save"/>
+        </resources>
+    </route>
+    <route url="/V1/products/:sku/file-attachments/replace" method="POST">
+        <service class="MageSuite\FileAttachments\Api\ProductAttachmentLinkManagementInterface" method="replace"/>
+        <resources>
+            <resource ref="MageSuite_FileAttachments::attachment_save"/>
+        </resources>
+    </route>
+    <route url="/V1/products/:sku/file-attachments/:attachmentId" method="DELETE">
+        <service class="MageSuite\FileAttachments\Api\ProductAttachmentLinkManagementInterface" method="unassign"/>
+        <resources>
+            <resource ref="MageSuite_FileAttachments::attachment_delete"/>
+        </resources>
+    </route>
+</routes>
