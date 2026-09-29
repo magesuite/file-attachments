@@ -93,7 +93,7 @@ class AttachmentManagementTest extends \PHPUnit\Framework\TestCase
         $apiAttachment = $this->createApiAttachment('Before update', [1], [1, 2]);
         $filenameBeforeUpdate = $apiAttachment->getFilename();
 
-        $attachmentData = $this->objectManager->create(\MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface::class);
+        $attachmentData = $this->objectManager->create(\MageSuite\FileAttachments\Api\Data\AttachmentInterface::class);
         $attachmentData->setName('After update');
         $updatedApiAttachment = $this->attachmentManagement->save($attachmentData, $apiAttachment->getAttachmentId());
 
@@ -115,7 +115,7 @@ class AttachmentManagementTest extends \PHPUnit\Framework\TestCase
         $this->createdFilePaths[] = $previousFilePath;
         $this->createdFilePaths[] = $previousThumbnailPath;
 
-        $attachmentData = $this->objectManager->create(\MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface::class);
+        $attachmentData = $this->objectManager->create(\MageSuite\FileAttachments\Api\Data\AttachmentInterface::class);
         $attachmentData->setFileContent($this->getFileContent($this->getFixtureFileData(), 'replaced_file.jpg'));
         $this->attachmentManagement->save($attachmentData, $apiAttachment->getAttachmentId());
 
@@ -159,7 +159,7 @@ class AttachmentManagementTest extends \PHPUnit\Framework\TestCase
 
         $searchResults = $this->attachmentManagement->getList($searchCriteriaBuilder->create());
         $names = array_map(
-            fn(\MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface $apiAttachment) => $apiAttachment->getName(),
+            fn(\MageSuite\FileAttachments\Api\Data\AttachmentInterface $savedAttachment) => $savedAttachment->getName(),
             $searchResults->getItems()
         );
 
@@ -188,7 +188,7 @@ class AttachmentManagementTest extends \PHPUnit\Framework\TestCase
         $searchCriteriaBuilder->addFilter('name', 'Product skus attachment');
         $searchResults = $this->attachmentManagement->getList($searchCriteriaBuilder->create());
 
-        $attachmentData = $this->objectManager->create(\MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface::class);
+        $attachmentData = $this->objectManager->create(\MageSuite\FileAttachments\Api\Data\AttachmentInterface::class);
         $attachmentData->setName('Product skus attachment updated');
         $updatedApiAttachment = $this->attachmentManagement->save($attachmentData, (int)$attachment->getId());
 
@@ -229,7 +229,7 @@ class AttachmentManagementTest extends \PHPUnit\Framework\TestCase
         string $name,
         array $storeIds,
         array $customerGroupIds
-    ): \MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface {
+    ): \MageSuite\FileAttachments\Api\Data\AttachmentInterface {
         $apiAttachment = $this->attachmentManagement->save($this->getAttachmentData($name, $storeIds, $customerGroupIds));
         $this->createdAttachmentIds[] = $apiAttachment->getAttachmentId();
 
@@ -240,8 +240,8 @@ class AttachmentManagementTest extends \PHPUnit\Framework\TestCase
         string $name,
         array $storeIds,
         ?array $customerGroupIds
-    ): \MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface {
-        $attachmentData = $this->objectManager->create(\MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface::class);
+    ): \MageSuite\FileAttachments\Api\Data\AttachmentInterface {
+        $attachmentData = $this->objectManager->create(\MageSuite\FileAttachments\Api\Data\AttachmentInterface::class);
         $attachmentData->setName($name);
         $attachmentData->setDescription('description');
         $attachmentData->setSortOrder(10);

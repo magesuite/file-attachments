@@ -9,8 +9,7 @@ class GetAttachmentList
     public function __construct(
         protected \MageSuite\FileAttachments\Model\ResourceModel\Attachment\CollectionFactory $attachmentCollectionFactory,
         protected \Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface $collectionProcessor,
-        protected \MageSuite\FileAttachments\Api\Data\ApiAttachmentSearchResultsInterfaceFactory $searchResultsFactory,
-        protected \MageSuite\FileAttachments\Model\Api\AttachmentMapper $attachmentMapper
+        protected \MageSuite\FileAttachments\Api\Data\ApiAttachmentSearchResultsInterfaceFactory $searchResultsFactory
     ) {
     }
 
@@ -25,21 +24,9 @@ class GetAttachmentList
 
         $searchResults = $this->searchResultsFactory->create();
         $searchResults->setSearchCriteria($searchCriteria);
-        $searchResults->setItems($this->getApiAttachments($attachmentCollection));
+        $searchResults->setItems(array_values($attachmentCollection->getItems()));
         $searchResults->setTotalCount($attachmentCollection->getSize());
 
         return $searchResults;
-    }
-
-    protected function getApiAttachments(
-        \MageSuite\FileAttachments\Model\ResourceModel\Attachment\Collection $attachmentCollection
-    ): array {
-        $apiAttachments = [];
-
-        foreach ($attachmentCollection->getItems() as $attachment) {
-            $apiAttachments[] = $this->attachmentMapper->toApiAttachment($attachment);
-        }
-
-        return $apiAttachments;
     }
 }

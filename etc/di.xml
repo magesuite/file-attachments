@@ -4,7 +4,6 @@
     <preference for="MageSuite\FileAttachments\Api\AttachmentRepositoryInterface" type="MageSuite\FileAttachments\Model\AttachmentRepository" />
     <preference for="MageSuite\FileAttachments\Api\AttachmentManagementInterface" type="MageSuite\FileAttachments\Model\Api\AttachmentManagement" />
     <preference for="MageSuite\FileAttachments\Api\ProductAttachmentLinkManagementInterface" type="MageSuite\FileAttachments\Model\Api\ProductAttachmentLinkManagement" />
-    <preference for="MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface" type="MageSuite\FileAttachments\Model\Api\Data\ApiAttachment" />
     <preference for="MageSuite\FileAttachments\Api\Data\FileContentInterface" type="MageSuite\FileAttachments\Model\Api\Data\FileContent" />
     <preference for="MageSuite\FileAttachments\Api\Data\ApiAttachmentSearchResultsInterface" type="MageSuite\FileAttachments\Model\Api\Data\ApiAttachmentSearchResults" />
 

@@ -12,6 +12,11 @@ interface AttachmentInterface
     public const SORT_ORDER = 'sort_order';
     public const CREATED_AT = 'created_at';
     public const UPDATED_AT = 'updated_at';
+    public const STORE_IDS = 'store_ids';
+    public const CUSTOMER_GROUP_IDS = 'customer_group_ids';
+    public const ALL_CUSTOMER_GROUPS = 'all_customer_groups';
+    public const PRODUCT_SKUS = 'product_skus';
+    public const FILE_CONTENT = 'file_content';
 
     /**
      * @return int
@@ -36,7 +41,7 @@ interface AttachmentInterface
     public function setFilename(string $filename);
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getName();
 
@@ -47,7 +52,7 @@ interface AttachmentInterface
     public function setName(string $name);
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getDescription();
 
@@ -58,7 +63,7 @@ interface AttachmentInterface
     public function setDescription(string $description);
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getSortOrder();
 
@@ -116,7 +121,62 @@ interface AttachmentInterface
     public function getThumbnailPath();
 
     /**
-     * @return array
+     * @return int[]
      */
     public function getAllowedCustomerGroupIds();
+
+    /**
+     * @return int[]|null
+     */
+    public function getStoreIds(): ?array;
+
+    /**
+     * @param int[]|null $storeIds
+     * @return $this
+     */
+    public function setStoreIds(?array $storeIds): self;
+
+    /**
+     * @return int[]|null
+     */
+    public function getCustomerGroupIds(): ?array;
+
+    /**
+     * @param int[]|null $customerGroupIds
+     * @return $this
+     */
+    public function setCustomerGroupIds(?array $customerGroupIds): self;
+
+    /**
+     * @return bool|null
+     */
+    public function getAllCustomerGroups(): ?bool;
+
+    /**
+     * @param bool|null $allCustomerGroups
+     * @return $this
+     */
+    public function setAllCustomerGroups(?bool $allCustomerGroups): self;
+
+    /**
+     * @return string[]|null
+     */
+    public function getProductSkus(): ?array;
+
+    /**
+     * @param string[]|null $productSkus
+     * @return $this
+     */
+    public function setProductSkus(?array $productSkus): self;
+
+    /**
+     * @return \MageSuite\FileAttachments\Api\Data\FileContentInterface|null
+     */
+    public function getFileContent(): ?\MageSuite\FileAttachments\Api\Data\FileContentInterface;
+
+    /**
+     * @param \MageSuite\FileAttachments\Api\Data\FileContentInterface|null $fileContent
+     * @return $this
+     */
+    public function setFileContent(?\MageSuite\FileAttachments\Api\Data\FileContentInterface $fileContent): self;
 }

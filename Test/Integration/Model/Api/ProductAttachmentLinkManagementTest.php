@@ -78,7 +78,7 @@ class ProductAttachmentLinkManagementTest extends \PHPUnit\Framework\TestCase
     protected function getAttachmentIds(array $apiAttachments): array
     {
         return array_map(
-            fn(\MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface $apiAttachment) => $apiAttachment->getAttachmentId(),
+            fn(\MageSuite\FileAttachments\Api\Data\AttachmentInterface $apiAttachment) => $apiAttachment->getAttachmentId(),
             $apiAttachments
         );
     }

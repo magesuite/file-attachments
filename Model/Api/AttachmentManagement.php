@@ -14,9 +14,9 @@ class AttachmentManagement implements \MageSuite\FileAttachments\Api\AttachmentM
     }
 
     public function save(
-        \MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface $attachment,
+        \MageSuite\FileAttachments\Api\Data\AttachmentInterface $attachment,
         ?int $attachmentId = null
-    ): \MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface {
+    ): \MageSuite\FileAttachments\Api\Data\AttachmentInterface {
         return $this->saveAttachment->save($attachment, $attachmentId);
     }
 

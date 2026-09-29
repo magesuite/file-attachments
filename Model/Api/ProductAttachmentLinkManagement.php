@@ -10,7 +10,6 @@ class ProductAttachmentLinkManagement implements \MageSuite\FileAttachments\Api\
         protected \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
         protected \MageSuite\FileAttachments\Model\ResourceModel\Attachment $attachmentResource,
         protected \MageSuite\FileAttachments\Model\ResourceModel\Attachment\CollectionFactory $attachmentCollectionFactory,
-        protected \MageSuite\FileAttachments\Model\Api\AttachmentMapper $attachmentMapper,
         protected \Magento\Framework\Indexer\CacheContext $cacheContext,
         protected \Magento\Framework\Event\ManagerInterface $eventManager
     ) {
@@ -111,9 +110,6 @@ class ProductAttachmentLinkManagement implements \MageSuite\FileAttachments\Api\
         $attachmentCollection->addCustomerGroupIdsToResults();
         $attachmentCollection->addProductSkusToResults();
 
-        return array_map(
-            fn(\MageSuite\FileAttachments\Model\Attachment $attachment) => $this->attachmentMapper->toApiAttachment($attachment),
-            array_values($attachmentCollection->getItems())
-        );
+        return array_values($attachmentCollection->getItems());
     }
 }

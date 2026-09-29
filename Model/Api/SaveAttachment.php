@@ -15,15 +15,14 @@ class SaveAttachment
         protected \Magento\Customer\Model\ResourceModel\Group\CollectionFactory $customerGroupCollectionFactory,
         protected \MageSuite\FileAttachments\Model\Api\FileContentUploaderFactory $fileContentUploaderFactory,
         protected \Magento\Framework\Filesystem\Driver\File $fileDriver,
-        protected \MageSuite\FileAttachments\Model\Attachment\GenerateThumbnail $generateThumbnail,
-        protected \MageSuite\FileAttachments\Model\Api\AttachmentMapper $attachmentMapper
+        protected \MageSuite\FileAttachments\Model\Attachment\GenerateThumbnail $generateThumbnail
     ) {
     }
 
     public function save(
-        \MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface $attachmentData,
+        \MageSuite\FileAttachments\Api\Data\AttachmentInterface $attachmentData,
         ?int $attachmentId = null
-    ): \MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface {
+    ): \MageSuite\FileAttachments\Api\Data\AttachmentInterface {
         $attachment = $this->getAttachment($attachmentId);
         $this->validate($attachmentData, $attachmentId);
         $this->populateAttachment($attachment, $attachmentData);
@@ -39,9 +38,9 @@ class SaveAttachment
         return $this->getSavedApiAttachment((int)$attachment->getId());
     }
 
-    protected function getSavedApiAttachment(int $attachmentId): \MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface
+    protected function getSavedApiAttachment(int $attachmentId): \MageSuite\FileAttachments\Api\Data\AttachmentInterface
     {
-        return $this->attachmentMapper->toApiAttachment($this->attachmentRepository->getById($attachmentId));
+        return $this->attachmentRepository->getById($attachmentId);
     }
 
     protected function getAttachment(?int $attachmentId): \MageSuite\FileAttachments\Model\Attachment
@@ -58,7 +57,7 @@ class SaveAttachment
     }
 
     protected function validate(
-        \MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface $attachmentData,
+        \MageSuite\FileAttachments\Api\Data\AttachmentInterface $attachmentData,
         ?int $attachmentId
     ): void {
         if ($attachmentId === null) {
@@ -72,14 +71,14 @@ class SaveAttachment
 
     protected function populateAttachment(
         \MageSuite\FileAttachments\Model\Attachment $attachment,
-        \MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface $attachmentData
+        \MageSuite\FileAttachments\Api\Data\AttachmentInterface $attachmentData
     ): void {
         $fields = [
             \MageSuite\FileAttachments\Api\Data\AttachmentInterface::NAME => $attachmentData->getName(),
             \MageSuite\FileAttachments\Api\Data\AttachmentInterface::DESCRIPTION => $attachmentData->getDescription(),
             \MageSuite\FileAttachments\Api\Data\AttachmentInterface::SORT_ORDER => $attachmentData->getSortOrder(),
-            'store_ids' => $attachmentData->getStoreIds(),
-            'customer_group_ids' => $this->getCustomerGroupIds($attachmentData),
+            \MageSuite\FileAttachments\Api\Data\AttachmentInterface::STORE_IDS => $attachmentData->getStoreIds(),
+            \MageSuite\FileAttachments\Api\Data\AttachmentInterface::CUSTOMER_GROUP_IDS => $this->getCustomerGroupIds($attachmentData),
         ];
 
         foreach ($fields as $key => $value) {
@@ -91,7 +90,7 @@ class SaveAttachment
         }
     }
 
-    protected function getCustomerGroupIds(\MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface $attachmentData): ?array
+    protected function getCustomerGroupIds(\MageSuite\FileAttachments\Api\Data\AttachmentInterface $attachmentData): ?array
     {
         if ($attachmentData->getAllCustomerGroups() === true) {
             return array_map('intval', $this->customerGroupCollectionFactory->create()->getAllIds());

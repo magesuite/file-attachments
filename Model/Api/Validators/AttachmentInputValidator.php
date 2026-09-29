@@ -11,49 +11,49 @@ class AttachmentInputValidator
     ) {
     }
 
-    public function validateForCreate(\MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface $attachmentData): void
+    public function validateForCreate(\MageSuite\FileAttachments\Api\Data\AttachmentInterface $attachmentData): void
     {
         if (empty($attachmentData->getName())) {
             throw \Magento\Framework\Exception\InputException::requiredField(
-                \MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface::NAME
+                \MageSuite\FileAttachments\Api\Data\AttachmentInterface::NAME
             );
         }
 
         if ($attachmentData->getFileContent() === null) {
             throw \Magento\Framework\Exception\InputException::requiredField(
-                \MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface::FILE_CONTENT
+                \MageSuite\FileAttachments\Api\Data\AttachmentInterface::FILE_CONTENT
             );
         }
 
         if ($attachmentData->getCustomerGroupIds() === null && $attachmentData->getAllCustomerGroups() !== true) {
             throw \Magento\Framework\Exception\InputException::requiredField(
-                \MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface::CUSTOMER_GROUP_IDS
+                \MageSuite\FileAttachments\Api\Data\AttachmentInterface::CUSTOMER_GROUP_IDS
             );
         }
 
         $this->validateCommonFields($attachmentData);
     }
 
-    public function validateForUpdate(\MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface $attachmentData): void
+    public function validateForUpdate(\MageSuite\FileAttachments\Api\Data\AttachmentInterface $attachmentData): void
     {
         if ($attachmentData->getName() === '') {
             throw \Magento\Framework\Exception\InputException::requiredField(
-                \MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface::NAME
+                \MageSuite\FileAttachments\Api\Data\AttachmentInterface::NAME
             );
         }
 
         $this->validateCommonFields($attachmentData);
     }
 
-    protected function validateCommonFields(\MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface $attachmentData): void
+    protected function validateCommonFields(\MageSuite\FileAttachments\Api\Data\AttachmentInterface $attachmentData): void
     {
         $this->validateNotEmptyList(
             $attachmentData->getStoreIds(),
-            \MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface::STORE_IDS
+            \MageSuite\FileAttachments\Api\Data\AttachmentInterface::STORE_IDS
         );
         $this->validateNotEmptyList(
             $attachmentData->getCustomerGroupIds(),
-            \MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface::CUSTOMER_GROUP_IDS
+            \MageSuite\FileAttachments\Api\Data\AttachmentInterface::CUSTOMER_GROUP_IDS
         );
         $this->validateCustomerGroupsOptions($attachmentData);
 
@@ -65,7 +65,7 @@ class AttachmentInputValidator
     }
 
     protected function validateCustomerGroupsOptions(
-        \MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface $attachmentData
+        \MageSuite\FileAttachments\Api\Data\AttachmentInterface $attachmentData
     ): void {
         if ($attachmentData->getAllCustomerGroups() !== true || $attachmentData->getCustomerGroupIds() === null) {
             return;
@@ -74,8 +74,8 @@ class AttachmentInputValidator
         throw new \Magento\Framework\Exception\InputException(
             __(
                 'Use either "%1" or "%2", not both.',
-                \MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface::CUSTOMER_GROUP_IDS,
-                \MageSuite\FileAttachments\Api\Data\ApiAttachmentInterface::ALL_CUSTOMER_GROUPS
+                \MageSuite\FileAttachments\Api\Data\AttachmentInterface::CUSTOMER_GROUP_IDS,
+                \MageSuite\FileAttachments\Api\Data\AttachmentInterface::ALL_CUSTOMER_GROUPS
             )
         );
     }
