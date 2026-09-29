@@ -237,7 +237,7 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements \Mage
         return array_values(array_map('intval', (array)$values));
     }
 
-    protected function getUploadFolderPath($directoryType): string
+    protected function getUploadFolderPath(string $directoryType): string
     {
         $basePath = $this->directoryList->getPath($directoryType);
         if ($directoryType === \Magento\Framework\App\Filesystem\DirectoryList::VAR_DIR) {
