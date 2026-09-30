@@ -217,17 +217,6 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
 
     public function addCustomerGroupFilter(string|int $customerGroupId): self
     {
-        $customerGroupAttachments = $this->getConnection()
-            ->select()
-            ->from(['facg' => $this->getTable('file_attachments_customer_group')], 'customer_group_id')
-            ->where('facg.customer_group_id = ?', $customerGroupId)
-            ->query()
-            ->fetchAll();
-
-        if (empty($customerGroupAttachments)) {
-            return $this;
-        }
-
         $this->getSelect()
             ->join(
                 ['facg' => $this->getTable('file_attachments_customer_group')],
