@@ -1,42 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\FileAttachments\Controller\Attachment;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class Download extends \Magento\Framework\App\Action\Action
 {
-    protected \MageSuite\FileAttachments\Api\AttachmentRepositoryInterface $attachmentRepository;
-    protected \MageSuite\FileAttachments\Model\FileUploader $fileUploader;
-    protected \MageSuite\FileAttachments\Service\CustomerGroupValidator $customerGroupValidator;
-    protected \Magento\Framework\App\Response\Http\FileFactory $fileFactory;
-    protected \Magento\Framework\UrlInterface $url;
-    protected \MageSuite\FileAttachments\Service\HashAttachmentFilename $hashAttachmentFilename;
-    protected \Psr\Log\LoggerInterface $logger;
-
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
-        \MageSuite\FileAttachments\Api\AttachmentRepositoryInterface $attachmentRepository,
-        \MageSuite\FileAttachments\Model\FileUploader $fileUploader,
-        \MageSuite\FileAttachments\Service\CustomerGroupValidator $customerGroupValidator,
-        \Magento\Framework\App\Response\Http\FileFactory $fileFactory,
-        \MageSuite\FileAttachments\Service\HashAttachmentFilename $hashAttachmentFilename,
-        \Magento\Framework\UrlInterface $url,
-        \Psr\Log\LoggerInterface $logger
+        protected \MageSuite\FileAttachments\Api\AttachmentRepositoryInterface $attachmentRepository,
+        protected \MageSuite\FileAttachments\Model\FileUploader $fileUploader,
+        protected \MageSuite\FileAttachments\Service\CustomerGroupValidator $customerGroupValidator,
+        protected \Magento\Framework\App\Response\Http\FileFactory $fileFactory,
+        protected \MageSuite\FileAttachments\Service\HashAttachmentFilename $hashAttachmentFilename,
+        protected \Magento\Framework\UrlInterface $url,
+        protected \Psr\Log\LoggerInterface $logger
     ) {
         parent::__construct($context);
-        $this->attachmentRepository = $attachmentRepository;
-        $this->fileUploader = $fileUploader;
-        $this->customerGroupValidator = $customerGroupValidator;
-        $this->fileFactory = $fileFactory;
-        $this->url = $url;
-        $this->hashAttachmentFilename = $hashAttachmentFilename;
-        $this->logger = $logger;
     }
 
-    public function execute()
+    public function execute(): \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
     {
         try {
-            $fileNameHash = $this->getRequest()->getParam('file');
-            $id = $this->getRequest()->getParam('id');
+            $fileNameHash = (string)$this->getRequest()->getParam('file');
+            $id = (int)$this->getRequest()->getParam('id');
             $attachment = $this->attachmentRepository->getById($id);
 
             if (!$this->validateAttachment($attachment, $fileNameHash)) {

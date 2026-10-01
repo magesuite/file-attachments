@@ -73,9 +73,9 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements \Mage
         return $this->setData(self::FILENAME, $filename);
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
-        return (string)$this->_getData(self::NAME);
+        return $this->_getData(self::NAME);
     }
 
     public function setName(string $name): self
@@ -83,9 +83,9 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements \Mage
         return $this->setData(self::NAME, $name);
     }
 
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
-        return (string)$this->_getData(self::DESCRIPTION);
+        return $this->_getData(self::DESCRIPTION);
     }
 
     public function setDescription(string $description): self
@@ -98,9 +98,11 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements \Mage
         return (string)$this->_getData(self::CREATED_AT);
     }
 
-    public function getSortOrder(): int
+    public function getSortOrder(): ?int
     {
-        return (int)$this->_getData(self::SORT_ORDER);
+        $sortOrder = $this->_getData(self::SORT_ORDER);
+
+        return $sortOrder === null ? null : (int)$sortOrder;
     }
 
     public function setSortOrder(int $sortOrder): self
@@ -164,7 +166,78 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements \Mage
         return $this->getResource()->lookupCustomerGroupIds($this->getId());
     }
 
-    protected function getUploadFolderPath($directoryType): string
+    public function getStoreIds(): ?array
+    {
+        return $this->getIntegerList(self::STORE_IDS);
+    }
+
+    public function setStoreIds(?array $storeIds): self
+    {
+        return $this->setData(self::STORE_IDS, $storeIds);
+    }
+
+    public function getCustomerGroupIds(): ?array
+    {
+        return $this->getIntegerList(self::CUSTOMER_GROUP_IDS);
+    }
+
+    public function setCustomerGroupIds(?array $customerGroupIds): self
+    {
+        return $this->setData(self::CUSTOMER_GROUP_IDS, $customerGroupIds);
+    }
+
+    public function getAllCustomerGroups(): ?bool
+    {
+        $allCustomerGroups = $this->_getData(self::ALL_CUSTOMER_GROUPS);
+
+        return $allCustomerGroups === null ? null : (bool)$allCustomerGroups;
+    }
+
+    public function setAllCustomerGroups(?bool $allCustomerGroups): self
+    {
+        return $this->setData(self::ALL_CUSTOMER_GROUPS, $allCustomerGroups);
+    }
+
+    public function getProductSkus(): ?array
+    {
+        if ($this->_getData(self::PRODUCT_SKUS) !== null) {
+            return $this->_getData(self::PRODUCT_SKUS);
+        }
+
+        if (!$this->getId()) {
+            return null;
+        }
+
+        return $this->getResource()->lookupProductSkus($this->getId());
+    }
+
+    public function setProductSkus(?array $productSkus): self
+    {
+        return $this->setData(self::PRODUCT_SKUS, $productSkus);
+    }
+
+    public function getFileContent(): ?\MageSuite\FileAttachments\Api\Data\FileContentInterface
+    {
+        return $this->_getData(self::FILE_CONTENT);
+    }
+
+    public function setFileContent(?\MageSuite\FileAttachments\Api\Data\FileContentInterface $fileContent): self
+    {
+        return $this->setData(self::FILE_CONTENT, $fileContent);
+    }
+
+    protected function getIntegerList(string $key): ?array
+    {
+        $values = $this->_getData($key);
+
+        if ($values === null) {
+            return null;
+        }
+
+        return array_values(array_map('intval', (array)$values));
+    }
+
+    protected function getUploadFolderPath(string $directoryType): string
     {
         $basePath = $this->directoryList->getPath($directoryType);
         if ($directoryType === \Magento\Framework\App\Filesystem\DirectoryList::VAR_DIR) {
